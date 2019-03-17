@@ -4,9 +4,23 @@ import Layout from "../components/layout"
 import { Link } from "gatsby"
 
 export default ({ data }) => {
-  const events = data.allEventsJson.edges
-  const venue = data.venuesJson
-  if (events === null) {
+  let venue;
+  let events;
+  if (data.venuesJson) {
+    venue = data.venuesJson
+  } else {
+    return (
+      <Layout>
+        <div>
+        <h1>Venue not found</h1>
+        <p><Link to="/">Go home</Link></p>
+        </div>
+      </Layout>
+      )
+  }
+  if (data.allEventsJson) {
+    events = data.allEventsJson.edges
+  } else {
     return (
       <Layout>
         <div>
@@ -14,7 +28,7 @@ export default ({ data }) => {
         <p>No events found.</p>
         </div>
       </Layout>
-      )
+    )
   }
   return (
     <Layout>

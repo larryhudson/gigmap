@@ -3,8 +3,13 @@ import { graphql } from "gatsby"
 import Layout from "../components/layout"
 
 export default ({ data }) => {
-  const event = data.eventsJson
-  if (event === null) {
+
+  let event;
+  let venue;
+
+  if (data.eventsJson) {
+    event = data.eventsJson
+  } else {
     return (
       <Layout>
         <div>
@@ -14,8 +19,11 @@ export default ({ data }) => {
       </Layout>
       )
   }
-  const venue = data.venuesJson
-  if (venue === null) {
+
+  if (data.venuesJson) {
+    venue = data.venuesJson
+  }
+  else {
     return (
       <Layout>
         <div>
@@ -26,6 +34,7 @@ export default ({ data }) => {
       </Layout>
       )
   }
+  
   return (
     <Layout>
       <div>
