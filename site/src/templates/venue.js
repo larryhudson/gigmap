@@ -51,6 +51,7 @@ query($venueURL: String!) {
         node {
           title
           date(formatString: "DD MMMM")
+          slug
         }
       }
     }
