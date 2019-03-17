@@ -33,7 +33,14 @@ module.exports = {
       options: {
         path: `./src/data`,
       }
-    }
+    },
+    {
+    resolve: 'gatsby-plugin-buildtime-timezone',
+    options: {
+      tz: 'Australia/Melbourne',
+      format: 'ddd, DD MMM YYYY hh:mm A',
+    },
+  },
     // this (optional) plugin enables Progressive Web App + Offline functionality
     // To learn more, visit: https://gatsby.app/offline
     // 'gatsby-plugin-offline',
