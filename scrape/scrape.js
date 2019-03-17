@@ -115,32 +115,53 @@ async function dayEvents(dates) {
 
 let rawdata = fs.readFileSync('venues.json');  
 let existingVenues = JSON.parse(rawdata);
-const existingVenueURLs = existingVenues.map(venue => venue.venueURL);
+console.log("BEFORE: EXISTING VENUES LENGTH: " + existingVenues.length)
 
-console.log("EXISTING")
-console.log(existingVenues.length)
+const toDelete = existingVenues.filter(venue => (venue.name === undefined))
 
-dayEvents(dates)
-.then(arraysOfEvents => {
-	return arraysOfEvents.reduce((acc, val) => acc.concat(val))
-})
-.then(events => {
-	const eventsJSON = makeJSON(events, 'events2')
-	return getUniqueVenueURLs(events)
-})
-.then(venueURLs => {
-	console.log("NEW")
-	console.log(venueURLs.length)
-	return compareVenues(existingVenueURLs, venueURLs)
-})
-.then(newURLs => {
-	return parseVenues(newURLs)
-})
-.then(newVenues => {
-	const allVenues = existingVenues.concat(newVenues);
-	const venuesJSON = makeJSON(allVenues, 'venues')
+console.log(toDelete)
 
+toDelete.forEach(venue => {
+
+	let idx = existingVenues.indexOf(venue)
+	if (idx > -1) {
+		console.log("removing " + venue)
+		existingVenues.splice(idx, 1)
+	}
 })
+
+console.log("AFTER: EXISTING VENUES LENGTH: " + existingVenues.length)
+const venuesJSON = makeJSON(existingVenues, 'venues3')
+
+
+
+
+// const existingVenueURLs = existingVenues.map(venue => venue.venueURL);
+
+// console.log("EXISTING")
+// console.log(existingVenues.length)
+
+// dayEvents(dates)
+// .then(arraysOfEvents => {
+// 	return arraysOfEvents.reduce((acc, val) => acc.concat(val))
+// })
+// .then(events => {
+// 	const eventsJSON = makeJSON(events, 'events2')
+// 	return getUniqueVenueURLs(events)
+// })
+// .then(venueURLs => {
+// 	console.log("NEW")
+// 	console.log(venueURLs.length)
+// 	return compareVenues(existingVenueURLs, venueURLs)
+// })
+// .then(newURLs => {
+// 	return parseVenues(newURLs)
+// })
+// .then(newVenues => {
+// 	const allVenues = existingVenues.concat(newVenues);
+// 	const venuesJSON = makeJSON(allVenues, 'venues')
+
+// })
 
 function compareVenues(existingVenues, venues) {
 	const newVenues = venues.filter(url => {
