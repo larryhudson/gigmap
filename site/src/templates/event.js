@@ -4,7 +4,7 @@ import Layout from "../components/layout"
 
 export default ({ data }) => {
   const event = data.eventsJson
-  if event === null {
+  if (event === null) {
     return (
       <Layout>
         <div>
@@ -15,7 +15,7 @@ export default ({ data }) => {
       )
   }
   const venue = data.venuesJson
-  if venue === null {
+  if (venue === null) {
     return (
       <Layout>
         <div>

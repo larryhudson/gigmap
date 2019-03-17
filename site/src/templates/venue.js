@@ -6,7 +6,7 @@ import { Link } from "gatsby"
 export default ({ data }) => {
   const events = data.allEventsJson.edges
   const venue = data.venuesJson
-  if events === null {
+  if (events === null) {
     return (
       <Layout>
         <div>
