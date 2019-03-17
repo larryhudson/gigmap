@@ -1,20 +1,19 @@
 {
-  "name": "gatsby-starter-default",
+  "name": "gigmap",
   "private": true,
-  "description": "A simple starter to get up and developing quickly with Gatsby",
+  "description": "Beat Magazine's gig guide, in a more useful format",
   "version": "0.1.0",
-  "author": "Kyle Mathews <mathews.kyle@gmail.com>",
+  "author": "Larry Hudson <harryludson@gmail.com>",
   "dependencies": {
     "@google/maps": "^0.5.5",
     "cheerio": "^1.0.0-rc.2",
-    "fs": "0.0.1-security",
     "gatsby": "^2.1.4",
     "gatsby-image": "^2.0.29",
     "gatsby-plugin-manifest": "^2.0.17",
-    "gatsby-plugin-offline": "^2.0.23",
+    "gatsby-plugin-offline": "^2.0.25",
     "gatsby-plugin-react-helmet": "^3.0.6",
     "gatsby-plugin-sharp": "^2.0.20",
-    "gatsby-source-filesystem": "^2.0.20",
+    "gatsby-source-filesystem": "^2.0.27",
     "gatsby-transformer-json": "^2.1.8",
     "gatsby-transformer-sharp": "^2.1.13",
     "google-map-react": "^1.1.2",
@@ -24,7 +23,8 @@
     "react-dom": "^16.8.2",
     "react-geocode": "^0.1.2",
     "react-helmet": "^5.2.0",
-    "request-promise": "^4.2.4"
+    "request-promise": "^4.2.4",
+    "styled-components": "^4.1.3"
   },
   "keywords": [
     "gatsby"
@@ -44,5 +44,8 @@
   },
   "bugs": {
     "url": "https://github.com/gatsbyjs/gatsby/issues"
+  },
+  "devDependencies": {
+    "dotenv": "^7.0.0"
   }
 }

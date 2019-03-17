@@ -1,0 +1,19 @@
+{
+  "name": "gigmap_scrape",
+  "version": "1.0.0",
+  "description": "Scrape utilities",
+  "main": "scrape.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@google/maps": "^0.5.5",
+    "cheerio": "^1.0.0-rc.2",
+    "lodash": "^4.17.11",
+    "node-fetch": "^2.3.0",
+    "request": "^2.88.0",
+    "request-promise": "^4.2.4"
+  }
+}
