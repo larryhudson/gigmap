@@ -32,7 +32,6 @@ const IndexPage = ({ data }) => {
       <li><Link to={'/day/' + date.dateStr}>{date.niceDate}</Link></li>
       ))}
     </ul>
-    <p>Now go build something great.</p>
     <h2>All venues</h2>
     <div style={{width: '100%', height: '600px', marginBottom: '2em'}}>
     <GoogleMap
