@@ -8,6 +8,8 @@ const googleMapsClient = require('@google/maps').createClient({
 });
 const moment = require('moment-timezone');
 
+moment.tz.setDefault("Australia/Melbourne");
+
 const headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/60.0.3112.113 Safari/537.36'}
 
 const eventDivSelector = '.archive_node-summary-wrapper';
@@ -144,15 +146,12 @@ let venuesFile = fs.readFileSync('venues.json');
 let existingVenues = JSON.parse(venuesFile);
 const existingVenueURLs = existingVenues.map(venue => venue.venueURL);
 
-console.log("EXISTING")
-console.log(existingVenues.length)
-
 dayEvents(dates)
 .then(arraysOfEvents => {
 	return arraysOfEvents.reduce((acc, val) => acc.concat(val))
 })
 .then(events => {
-	const eventsJSON = makeJSON(events, 'events2')
+	const eventsJSON = makeJSON(events, 'events')
 	return getUniqueVenueURLs(events)
 })
 .then(venueURLs => {
@@ -164,11 +163,14 @@ dayEvents(dates)
 	return parseVenues(newURLs)
 })
 .then(newVenues => {
+	console.log("NEW VENUES")
+	console.log(newVenues)
 	const allVenues = existingVenues.concat(newVenues);
-	const venuesJSON = makeJSON(allVenues, 'venues2')
+	const venuesJSON = makeJSON(allVenues, 'venues')
 })
 
 function compareVenues(existingVenues, venues) {
+	console.log(existingVenues.length + " venues")
 	const newVenues = venues.filter(url => {
 		if (!(existingVenues.includes(url))) {
 			return url
@@ -208,7 +210,7 @@ function parseEvent($, event) {
 		venueURL: 'http://www.beat.com.au' + $(event).find('h5').eq(1).find('a').attr('href'),
 		venueName: $(event).find('h5').eq(1).text(),
 		genre: $(event).attr('class').split(' ').pop(),
-		date: moment(dateStr, 'DD MMM YYYY').tz('Australia/Melbourne'),
+		date: moment.utc(dateStr, 'DD MMM YYYY'),
 		region: $(event).find('h5').eq(2).text(),
 		price: $(event).find('h5').eq(3).text(),
 		slug: $(event).find('h3 a').attr('href'),
@@ -230,11 +232,10 @@ async function getCoords(address) {
 
 async function parseVenues(venueURLs) {
 	// venueURLs is a list of strings
-	let venuesMap = venueURLs.map(
+	return Promise.all(
+		venuesMap = venueURLs.map(
 			async url => await parseVenue(url)
 			)
-	return Promise.all(
-		venuesMap.filter(venue => venue.name)
 		)
 }
 
