@@ -134,40 +134,45 @@ function deleteInvalidVenues() {
 	const venuesJSON = makeJSON(existingVenues, 'venues3')
 }
 
-const today = moment.tz("Australia/Melbourne");
-const sevenDaysAway = today.clone().add(7, 'd');
-console.log("today: " + today.format())
-console.log("seven days away: " + sevenDaysAway.format());
 
-var dates = daysBetween(today, sevenDaysAway);
-console.log(dates);
 
-let venuesFile = fs.readFileSync('venues.json');  
-let existingVenues = JSON.parse(venuesFile);
-const existingVenueURLs = existingVenues.map(venue => venue.venueURL);
 
-dayEvents(dates)
-.then(arraysOfEvents => {
-	return arraysOfEvents.reduce((acc, val) => acc.concat(val))
-})
-.then(events => {
-	const eventsJSON = makeJSON(events, 'events')
-	return getUniqueVenueURLs(events)
-})
-.then(venueURLs => {
-	console.log("NEW")
-	console.log(venueURLs.length)
-	return compareVenues(existingVenueURLs, venueURLs)
-})
-.then(newURLs => {
-	return parseVenues(newURLs)
-})
-.then(newVenues => {
-	console.log("NEW VENUES")
-	console.log(newVenues)
-	const allVenues = existingVenues.concat(newVenues);
-	const venuesJSON = makeJSON(allVenues, 'venues')
-})
+
+// MAIN FUNCTION - GET EVENTS FOR DAYS, GET NEW VENUES AND SAVE BOTH.
+// const today = moment.tz("Australia/Melbourne");
+// const sevenDaysAway = today.clone().add(7, 'd');
+// console.log("today: " + today.format())
+// console.log("seven days away: " + sevenDaysAway.format());
+
+// var dates = daysBetween(today, sevenDaysAway);
+// console.log(dates);
+
+// let venuesFile = fs.readFileSync('venues.json');  
+// let existingVenues = JSON.parse(venuesFile);
+// const existingVenueURLs = existingVenues.map(venue => venue.venueURL);
+
+// dayEvents(dates)
+// .then(arraysOfEvents => {
+// 	return arraysOfEvents.reduce((acc, val) => acc.concat(val))
+// })
+// .then(events => {
+// 	const eventsJSON = makeJSON(events, 'events')
+// 	return getUniqueVenueURLs(events)
+// })
+// .then(venueURLs => {
+// 	console.log("NEW")
+// 	console.log(venueURLs.length)
+// 	return compareVenues(existingVenueURLs, venueURLs)
+// })
+// .then(newURLs => {
+// 	return parseVenues(newURLs)
+// })
+// .then(newVenues => {
+// 	console.log("NEW VENUES")
+// 	console.log(newVenues)
+// 	const allVenues = existingVenues.concat(newVenues);
+// 	const venuesJSON = makeJSON(allVenues, 'venues')
+// })
 
 function compareVenues(existingVenues, venues) {
 	console.log(existingVenues.length + " venues")
@@ -183,18 +188,37 @@ function compareVenues(existingVenues, venues) {
 
 
 
+// // load in events file.
+let eventsFile = fs.readFileSync('events.json');  
+let events = JSON.parse(eventsFile);
+let venuesFile = fs.readFileSync('venues.json');
+let venues = JSON.parse(venuesFile)
+
+const detailedEvents = events.map(e => {
+	let detailedEvent = JSON.parse(JSON.stringify(e))
+	detailedEvent.venue = venues.find(v => v.venueURL === e.venueURL)
+	return detailedEvent
+})
+
+const detailedVenues = venues.map(v => {
+	let detailedVenue = JSON.parse(JSON.stringify(v))
+	detailedVenue.events = events.filter(e => e.venueURL === v.venueURL)
+	return detailedVenue
+})
+
+makeJSON(detailedVenues, 'detailedVenues')
+makeJSON(detailedEvents, 'detailedEvents')
+
+// events.forEach(e => {
+// 	e.venue = venues.find(v => v.venueURL === e.venueURL)
+// })
+
+// venues.forEach(v => {
+// 	events.filter(e => e.venueURL === v.venueURL)
+// })
+
+
 // YYYY-MM-DD
-
-
- // we need to:
- // - get events for next 5 days. okay to rewrite data - 5 requests to beat mag is fine.
- // - get existing venue urls
- // - for the new events, get unique venue urls
- // - for each venue url that's not in the existing list, parse them and add them to the list
- // 
- //
- //
- //
 
 
 

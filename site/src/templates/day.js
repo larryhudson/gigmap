@@ -7,9 +7,12 @@ import SEO from "../components/seo"
 import GoogleMap from "../components/GoogleMap"
 import Marker from "../components/Marker"
 
-const IndexPage = ({ data }) => {
+const DayPage = ({ data, pageContext }) => {
   const events = data.allEventsJson.edges;
   const date = data.allEventsJson.edges[0].node.date;
+  console.log(pageContext);
+  const nextDate = pageContext.next;
+  const prevDate = pageContext.prev;
   const venues = events.map(({node: event}) => {
     return event.venue
   })
@@ -19,35 +22,39 @@ const IndexPage = ({ data }) => {
   <Layout>
     <SEO title="Home" keywords={[`gatsby`, `application`, `react`]} />
     <h1>Gigs on {date}</h1>
-    <p>The map below doesn't work yet.</p>
-    <p>But you can click on the links in the list below the map.</p>
-    <div style={{width: '100%', height: '600px'}}>
+    {prevDate && (
+    <p>Previous: <Link to={"/day/" + prevDate.dateStr}>{prevDate.niceDate}</Link></p>
+    )}
+    {nextDate && (
+      <p>Next: <Link to={"/day/" + nextDate.dateStr}>{nextDate.niceDate}</Link></p>
+    )}
+    <div style={{width: '100%', height: '600px', marginBottom: '2em'}}>
     <GoogleMap
       defaultZoom={12}
       defaultCenter={MELB_CENTER}
       yesIWantToUseGoogleMapApiInternals
     >
-    {mapVenues.map( venue => (
+    {events.map( ({node: event}) => (
       <Marker
-                key={venue.venueURL}
-                text={venue.name}
-                lat={venue.coords.lat}
-                lng={venue.coords.lng}
-                venueURL={venue.venueURL}
+                key={event.slug}
+                text={event.venue.name}
+                lat={event.venue.coords.lat}
+                lng={event.venue.coords.lng}
+                eventSlug={event.slug}
       />  
       ))}
     </GoogleMap>
     </div>
-    <h2>Gigs on today</h2>
+    <h2>{date}</h2>
     <ul>
     {events.map( ({node: event}) => (
-      <li key={event.id}><Link to={event.slug}>{event.title} at {event.venue.name}</Link></li>
+      <li key={event.slug}><Link to={event.slug}>{event.title} at {event.venue.name}</Link></li>
       ))}
     </ul>
   </Layout>
 )}
 
-export default IndexPage
+export default DayPage
 
 export const pageQuery = graphql`  
   query($date: String!)  {
@@ -56,7 +63,7 @@ export const pageQuery = graphql`
       node {
         slug
         title
-        date(formatString: "DD MMMM")
+        date(formatString: "dddd DD MMMM")
         venue {
           name
           venueURL

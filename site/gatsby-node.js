@@ -10,25 +10,16 @@ require("dotenv").config({
 })
 
 const path = require(`path`)
-const uniq = require('lodash.uniq');
+const uniqBy = require('lodash.uniqby');
 const moment = require('moment');
-
-
-exports.onCreateNode = ({ node, actions }) => {
-  const { createNode, createNodeField } = actions
-  if (node.venueURL) {
-    console.log(node.venueURL)
-  }
-  // Transform the new node here and create a new node or
-  // create a new node field.
-}
 
 
 exports.createPages = ({ graphql, actions }) => {
   const { createPage } = actions
   return graphql(`
     {
-      allEventsJson {
+      allEventsJson
+      (sort: {fields: [date], order: ASC} ) {
 	    edges {
 	      node {
 	        slug
@@ -71,16 +62,21 @@ exports.createPages = ({ graphql, actions }) => {
         },
       })
     })
-    const dates = uniq(result.data.allEventsJson.edges.map(({node}) => {
-      return node.date;
-    }))
-    dates.forEach(date => {
-      const dateStr = moment(date).format('DD-MM-YYYY')
+    const dates = uniqBy(result.data.allEventsJson.edges.map(({node}) => {
+        const dateVal = node.date
+        const dateStr = moment(node.date).format('DD-MM-YYYY')
+        const niceDate = moment(node.date).format('dddd D MMMM')
+        return { dateVal, dateStr, niceDate }
+      }), 'dateVal')
+    dates.forEach((date, index) => {
+      console.log(date)
       createPage({
-      path: path.join('/day', dateStr),
+      path: path.join('/day', date.dateStr),
       component: path.resolve('./src/templates/day.js'),
       context: {
-        date
+        date: date.dateVal,
+        prev: index === 0 ? null : dates[index - 1],
+        next: index === (dates.length - 1) ? null : dates[index + 1]
       }
       })
     })

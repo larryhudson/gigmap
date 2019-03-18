@@ -1,5 +1,7 @@
 import React from "react"
 import { Link, graphql } from 'gatsby'
+import uniqBy from 'lodash.uniqby'
+import moment from 'moment'
 
 import Layout from "../components/layout"
 import Image from "../components/image"
@@ -11,14 +13,28 @@ const IndexPage = ({ data }) => {
   const events = data.allEventsJson.edges;
   const venues = data.allVenuesJson.edges;
   const mapVenues = venues.filter(({node: venue}) => venue.coords)
+  const dates = uniqBy(
+    data.allEventsJson.edges.map(({node}) => {
+      const dateVal = node.date
+      const dateStr = moment(node.date).format('DD-MM-YYYY')
+      const niceDate = moment(node.date).format('dddd D MMMM')
+      return { dateVal, dateStr, niceDate }
+  }), 'dateVal')
   const MELB_CENTER = [-37.8124, 144.9623];
   return (
   <Layout>
     <SEO title="Home" keywords={[`gatsby`, `application`, `react`]} />
-    <h1>Hi people</h1>
-    <p>Welcome to your new Gatsby site.</p>
+    <h1></h1>
+    <p>This website shows you what's on this week. Information is from <a href="//www.beat.com.au/gig-guide/">Beat Magazine</a>.</p>
+    <h2>This week</h2>
+    <ul>
+    {dates.map( date => (
+      <li><Link to={'/day/' + date.dateStr}>{date.niceDate}</Link></li>
+      ))}
+    </ul>
     <p>Now go build something great.</p>
-    <div style={{width: '100%', height: '600px'}}>
+    <h2>All venues</h2>
+    <div style={{width: '100%', height: '600px', marginBottom: '2em'}}>
     <GoogleMap
       defaultZoom={12}
       defaultCenter={MELB_CENTER}
@@ -35,22 +51,6 @@ const IndexPage = ({ data }) => {
       ))}
     </GoogleMap>
     </div>
-    <h2>Venues</h2>
-    <ul>
-    {venues.map( ({node: venue}) => (
-      <li key={venue.id}><Link to={venue.id}>{venue.name}</Link></li>
-      ))}
-    </ul>
-    <h2>Gigs on today</h2>
-    <ul>
-    {events.map( ({node: event}) => (
-      <li key={event.id}><Link to={event.slug}>{event.title} at {event.venueName} on {event.date}</Link></li>
-      ))}
-    </ul>
-    <div style={{ maxWidth: `300px`, marginBottom: `1.45rem` }}>
-      <Image />
-    </div>
-    <Link to="/page-2/">Go to page 2</Link>
   </Layout>
 )}
 
@@ -58,12 +58,13 @@ export default IndexPage
 
 export const pageQuery = graphql`  
     query IndexQuery {
-        allEventsJson(sort: {fields: [date], order: ASC}, ) {
+        allEventsJson
+        (sort: {fields: [date], order: ASC} ) {
           edges {
             node {
               slug
               title
-              date(formatString: "DD MMMM")
+              date(formatString: "DD MMMM YY")
               venueName
               genre
               region

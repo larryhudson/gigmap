@@ -3,6 +3,7 @@ import { graphql, Link } from "gatsby"
 import Layout from "../components/layout"
 import GoogleMap from "../components/GoogleMap"
 import Marker from "../components/Marker"
+import moment from "moment"
 
 export default ({ data }) => {
 
@@ -36,11 +37,16 @@ export default ({ data }) => {
       </Layout>
       )
   }
+
+  const date = data.eventsJson.date;
+  const dateStr = moment(date).format('DD-MM-YYYY')
+  const niceDate = moment(date).format('dddd DD MMMM')
   
   return (
     <Layout>
       <div>
         <h1>{event.title}</h1>
+        <p>Date: <Link to={'/day/' + dateStr}>{niceDate}</Link></p>
         <p>Venue: <Link to={venue.id}>{venue.name}</Link></p>
         <div style={{width: "600px", height: "80%"}}>
         <GoogleMap
@@ -68,6 +74,7 @@ export const query = graphql`
 query($slug: String!, $venueURL: String!) {
     eventsJson(slug: { eq: $slug } ) {
       title
+      date
       venueName
       infoLink
       venueURL

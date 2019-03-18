@@ -20,6 +20,7 @@
     "google-map-react": "^1.1.2",
     "lodash": "^4.17.11",
     "lodash.uniq": "^4.5.0",
+    "lodash.uniqby": "^4.7.0",
     "prop-types": "^15.7.2",
     "react": "^16.8.2",
     "react-dom": "^16.8.2",

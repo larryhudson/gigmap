@@ -23,7 +23,12 @@ const Wrapper = styled.div`
 
 class Marker extends Component {
   handleClick() {
-    navigate(this.props.venueId);
+    if (this.props.venueId) {
+      navigate(this.props.venueId);
+    }
+    if (this.props.eventSlug) {
+      navigate(this.props.eventSlug);
+    }
   }
   render() {
     return <Wrapper
