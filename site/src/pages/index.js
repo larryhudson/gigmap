@@ -20,7 +20,7 @@ const IndexPage = ({ data }) => {
     <p>Now go build something great.</p>
     <div style={{width: '100%', height: '600px'}}>
     <GoogleMap
-      defaultZoom={10}
+      defaultZoom={12}
       defaultCenter={MELB_CENTER}
       yesIWantToUseGoogleMapApiInternals
     >

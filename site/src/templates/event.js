@@ -1,6 +1,8 @@
 import React from "react"
 import { graphql, Link } from "gatsby"
 import Layout from "../components/layout"
+import GoogleMap from "../components/GoogleMap"
+import Marker from "../components/Marker"
 
 export default ({ data }) => {
 
@@ -39,9 +41,22 @@ export default ({ data }) => {
     <Layout>
       <div>
         <h1>{event.title}</h1>
-        <p>Venue: {venue.name}</p>
+        <p>Venue: <Link to={venue.id}>{venue.name}</Link></p>
+        <div style={{width: "600px", height: "80%"}}>
+        <GoogleMap
+          defaultZoom={12}
+          defaultCenter={venue.coords}
+          yesIWantToUseGoogleMapApiInternals
+        >
+          <Marker
+                    text={venue.name}
+                    lat={venue.coords.lat}
+                    lng={venue.coords.lng}
+                    venueId={venue.id}
+          />  
+        </GoogleMap>
+        </div>
         <p>Address: {venue.address}</p>
-        <p>VenueURL: {event.venueURL}</p>
         <p><a href={event.infoLink}>More info at Beat's website</a></p>
         {venue.website && <p><a href={venue.website}>{venue.name} website</a></p>}
       </div>
@@ -58,6 +73,7 @@ query($slug: String!, $venueURL: String!) {
       venueURL
     }
     venuesJson(venueURL: { eq: $venueURL } ) {
+      id
       name
       address
       coords {

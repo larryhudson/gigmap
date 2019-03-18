@@ -10,6 +10,19 @@ require("dotenv").config({
 })
 
 const path = require(`path`)
+const uniq = require('lodash.uniq');
+const moment = require('moment');
+
+
+exports.onCreateNode = ({ node, actions }) => {
+  const { createNode, createNodeField } = actions
+  if (node.venueURL) {
+    console.log(node.venueURL)
+  }
+  // Transform the new node here and create a new node or
+  // create a new node field.
+}
+
 
 exports.createPages = ({ graphql, actions }) => {
   const { createPage } = actions
@@ -20,6 +33,7 @@ exports.createPages = ({ graphql, actions }) => {
 	      node {
 	        slug
           venueURL
+          date
 	      }
 	    }
 	  }
@@ -55,6 +69,19 @@ exports.createPages = ({ graphql, actions }) => {
           id: node.id,
           venueURL: node.venueURL
         },
+      })
+    })
+    const dates = uniq(result.data.allEventsJson.edges.map(({node}) => {
+      return node.date;
+    }))
+    dates.forEach(date => {
+      const dateStr = moment(date).format('DD-MM-YYYY')
+      createPage({
+      path: path.join('/day', dateStr),
+      component: path.resolve('./src/templates/day.js'),
+      context: {
+        date
+      }
       })
     })
   })
