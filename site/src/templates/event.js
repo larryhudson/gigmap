@@ -3,6 +3,7 @@ import { graphql, Link } from "gatsby"
 import Layout from "../components/layout"
 import genreName from "../consts/genres"
 import moment from "moment"
+import SEO from "../components/seo"
 
 export default ({ data }) => {
 
@@ -44,6 +45,7 @@ export default ({ data }) => {
   
   return (
     <Layout>
+    <SEO title={event.title} keywords={[`music`, `melbourne`]} />
       <div>
         <h1>{event.title}</h1>
         <p>Date: <Link to={'/day/' + dateStr}>{niceDate}</Link></p>

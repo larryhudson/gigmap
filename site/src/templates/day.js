@@ -5,10 +5,13 @@ import SEO from "../components/seo"
 import GoogleMap from "../components/GoogleMap"
 import Marker from "../components/Marker"
 import {genreColour} from "../consts/genres"
+import getGenreName from "../consts/genres"
 
 const DayPage = ({ data, pageContext }) => {
-  const events = data.allEventsJson.edges;
-  const date = data.allEventsJson.edges[0].node.date;
+  const events = data.allEvents.edges;
+  const date = data.allEvents.edges[0].node.date;
+  const genres = data.eventsByGenre.group;
+  console.log(genres)
   const nextDate = pageContext.next;
   const prevDate = pageContext.prev;
   const MELB_CENTER = [-37.8124, 144.9623];
@@ -41,11 +44,18 @@ const DayPage = ({ data, pageContext }) => {
     </GoogleMap>
     </div>
     <h2>{date}</h2>
-    <ul>
-    {events.map( ({node: event}) => (
-      <li key={event.slug}><Link to={event.slug}>{event.title} at {event.venue.name}{event.price && ' '+event.price}</Link></li>
+    
+
+    {genres.map( genre => (
+      <div>
+      <h3>{getGenreName(genre.fieldValue)} ({genre.totalCount})</h3>
+      <ul>
+      {genre.edges.map( ({node: event}) => (
+        <li key={event.slug}><Link to={event.slug}>{event.title} at {event.venue.name}{event.price && ' '+event.price}</Link></li>
+        ))}
+      </ul>
+      </div>
       ))}
-    </ul>
   </Layout>
 )}
 
@@ -53,8 +63,33 @@ export default DayPage
 
 export const pageQuery = graphql`  
   query($date: String!)  {
-  allEventsJson(filter: {date: {eq: $date}}) {
-    edges {
+  eventsByGenre: allEventsJson(filter: {date: {eq: $date}}) {
+    group(field: genre) {
+      fieldValue
+      totalCount
+      edges {
+        node {
+          slug
+          title
+          genre
+          date(formatString: "dddd DD MMMM")
+          price
+          venue {
+            name
+            venueURL
+            address
+            coords {
+              lat
+              lng
+            }
+          }
+        }
+      }
+    }
+  }
+  allEvents: allEventsJson(filter: {date: {eq: $date}}) {
+  totalCount
+  edges {
       node {
         slug
         title
@@ -70,7 +105,6 @@ export const pageQuery = graphql`
             lng
           }
         }
-        
       }
     }
   }
