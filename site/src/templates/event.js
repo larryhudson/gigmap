@@ -1,8 +1,7 @@
 import React from "react"
 import { graphql, Link } from "gatsby"
 import Layout from "../components/layout"
-import GoogleMap from "../components/GoogleMap"
-import Marker from "../components/Marker"
+import genreName from "../consts/genres"
 import moment from "moment"
 
 export default ({ data }) => {
@@ -41,6 +40,7 @@ export default ({ data }) => {
   const date = data.eventsJson.date;
   const dateStr = moment(date).format('DD-MM-YYYY')
   const niceDate = moment(date).format('dddd DD MMMM')
+  const genreStr = genreName(event.genre)
   
   return (
     <Layout>
@@ -48,20 +48,10 @@ export default ({ data }) => {
         <h1>{event.title}</h1>
         <p>Date: <Link to={'/day/' + dateStr}>{niceDate}</Link></p>
         <p>Venue: <Link to={venue.id}>{venue.name}</Link></p>
-        <div style={{width: "600px", height: "80%"}}>
-        <GoogleMap
-          defaultZoom={12}
-          defaultCenter={venue.coords}
-          yesIWantToUseGoogleMapApiInternals
-        >
-          <Marker
-                    text={venue.name}
-                    lat={venue.coords.lat}
-                    lng={venue.coords.lng}
-                    venueId={venue.id}
-          />  
-        </GoogleMap>
-        </div>
+        {event.price && (
+          <p>Price: {event.price}</p>
+          )}
+        <p>Genre: {genreStr}</p>
         <p>Address: {venue.address}</p>
         <p><a href={event.infoLink}>More info at Beat's website</a></p>
         {venue.website && <p><a href={venue.website}>{venue.name} website</a></p>}
@@ -74,10 +64,12 @@ export const query = graphql`
 query($slug: String!, $venueURL: String!) {
     eventsJson(slug: { eq: $slug } ) {
       title
+      price
       date
       venueName
       infoLink
       venueURL
+      genre
     }
     venuesJson(venueURL: { eq: $venueURL } ) {
       id

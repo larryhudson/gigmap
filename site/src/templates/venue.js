@@ -2,8 +2,7 @@ import React from "react"
 import { graphql } from "gatsby"
 import Layout from "../components/layout"
 import { Link } from "gatsby"
-import GoogleMap from "../components/GoogleMap"
-import Marker from "../components/Marker"
+import SEO from "../components/seo"
 
 export default ({ data }) => {
   let venue;
@@ -34,26 +33,14 @@ export default ({ data }) => {
   }
   return (
     <Layout>
+    <SEO title={venue.name} keywords={[`music`, `melbourne`]} />
       <div>
         <h1>Gigs at {venue.name}</h1>
+        <ul>
         {events.map( ({node: event}) => (
         <li key={event.id}><Link to={'/' + event.slug}>{event.title} on {event.date}</Link></li>
         ))}
-        <div style={{width: '600px', height: '80%'}}>
-        <GoogleMap
-          defaultZoom={12}
-          defaultCenter={venue.coords}
-          yesIWantToUseGoogleMapApiInternals
-        >
-          <Marker
-                    key={venue.id}
-                    text={venue.name}
-                    lat={venue.coords.lat}
-                    lng={venue.coords.lng}
-                    venueId={venue.id}
-          />  
-        </GoogleMap>
-        </div>
+        </ul>
         <p>Address: {venue.address}</p>
         {venue.website && <p><a href={venue.website}>{venue.name} website</a></p>}
       </div>

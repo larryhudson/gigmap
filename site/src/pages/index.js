@@ -4,15 +4,13 @@ import uniqBy from 'lodash.uniqby'
 import moment from 'moment'
 
 import Layout from "../components/layout"
-import Image from "../components/image"
 import SEO from "../components/seo"
 import GoogleMap from "../components/GoogleMap"
 import Marker from "../components/Marker"
 
 const IndexPage = ({ data }) => {
-  const events = data.allEventsJson.edges;
   const venues = data.allVenuesJson.edges;
-  const mapVenues = venues.filter(({node: venue}) => venue.coords)
+  const mapVenues = venues.filter(({node: venue}) => venue.events.length)
   const dates = uniqBy(
     data.allEventsJson.edges.map(({node}) => {
       const dateVal = node.date
@@ -24,7 +22,6 @@ const IndexPage = ({ data }) => {
   return (
   <Layout>
     <SEO title="Home" keywords={[`gatsby`, `application`, `react`]} />
-    <h1></h1>
     <p>This website shows you what's on this week. Information is from <a href="//www.beat.com.au/gig-guide/">Beat Magazine</a>.</p>
     <h2>This week</h2>
     <ul>
@@ -80,6 +77,9 @@ export const pageQuery = graphql`
               coords {
                 lat
                 lng
+              }
+              events {
+                title
               }
             }
           }
