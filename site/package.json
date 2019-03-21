@@ -38,7 +38,8 @@
     "develop": "gatsby develop",
     "start": "npm run scrape && npm run develop",
     "serve": "gatsby serve",
-    "scrape": "node scrape.js",
+    "scrape": "cd ../scrape && node scrape.js",
+    "scrapebuild": "cd ../scrape && node scrape.js && cd ../site && gatsby build",
     "test": "echo \"Write tests! -> https://gatsby.app/unit-testing\""
   },
   "repository": {
