@@ -1,44 +1,12 @@
-# GETTING DATA
-- First scrape
-	- get all events
-		- event id - based on more info link (unique)
-		- title
-		- date
-		- genre
-		- venue id
-		- ticket price
-		- region
-		- more info link
-	- get all venues.
-		- name
-		- address
-		- map coords - use google maps
-		- more info link
-		- venue id - based on info link (unique)
-		- save in a json file.
-- Second scrape
-	- get new events
-		- check against old events, try to update data? or replace data?
-	- get new venues
-		- check against old venues, only add new ones.
-- Each scrape
-	- Keep a log with diffed data. Want to find out when Beat Mag updates their info.
+# Gigmap
+This is a Gatsby app that scrapes [Beat Magazine](https://www.beat.com.au/gig-guide/)'s weekly gig guide.
 
+I've got it hosted at Netlify. [You can see it here](https://gigmap.netlify.com).
 
-# GATSBY APP - RENDERING DATA
-- Pages for:
-	- Index - today's gigs
-	- List of days - calendar
-	- Each date - each day's gigs
-	- List of venues - map?
-	- Each venue - each venue's gigs
-	- List of genres
-	- Each genre
-	- Each gig
-	- Filter by price - free gigs.
-- Sign up so you can:
-	- Have favourite venues
-	- Have favourite genres
-	- Hide stuff you don't care about
-	- Save individual events?
-	
+It rebuilds every hour.
+
+To do:
+- Get more info for each event. At the moment it only scrapes the day pages, but if I scrape each event page, it'll be able to get ticket links, artists and support artists and start times. But I can't ask Beat Mag for 500 events at a time, so it needs to be a bit more clever.
+- Make the map easier to use. Instead of just linking to event pages, little info windows should overlay the map. Maybe just venue name and event name
+- Should be able to filter what you want to see on the map, and have each category be colour coded. Maybe different shapes for accessibility?
+- The home page should have today's events. At the moment it just has a list of days and a map of all the venues that have an event this week.
