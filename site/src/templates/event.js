@@ -48,14 +48,18 @@ export default ({ data }) => {
     <SEO title={event.title} keywords={[`music`, `melbourne`]} />
       <div>
         <h1>{event.title}</h1>
-        <p>Date: <Link to={'/day/' + dateStr}>{niceDate}</Link></p>
         <p>Venue: <Link to={venue.id}>{venue.name}</Link></p>
-        {event.price && (
-          <p>Price: {event.price}</p>
-          )}
+        <p>Date: <Link to={'/day/' + dateStr}>{niceDate}</Link></p>
+        {event.startTime && <p>Time: {event.startTime}</p>}
+        {event.price && <p>Price: {event.price}</p>}
+        {event.mainArtist && <p>Artist: {event.mainArtist.name}</p>}
+        {(event.supports.length > 0) && <p>Supports: {event.supports.map(support => (<span>{support.name}</span>))}</p>}
         <p>Genre: {genreStr}</p>
         <p>Address: {venue.address}</p>
-        <p><a href={event.infoLink}>More info at Beat's website</a></p>
+        {event.infoLink && (
+          <p><a href={event.infoLink.href}>{event.infoLink.text}</a></p>
+          )}
+        
         {venue.website && <p><a href={venue.website}>{venue.name} website</a></p>}
       </div>
     </Layout>
@@ -69,9 +73,19 @@ query($slug: String!, $venueURL: String!) {
       price
       date
       venueName
-      infoLink
+      infoLink {
+        text
+        href
+      }
       venueURL
       genre
+      startTime
+      mainArtist {
+        name
+      }
+      supports {
+        name
+      }
     }
     venuesJson(venueURL: { eq: $venueURL } ) {
       id

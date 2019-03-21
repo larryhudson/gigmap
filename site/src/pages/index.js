@@ -65,7 +65,6 @@ export const pageQuery = graphql`
               genre
               region
               price
-              infoLink
           }
       }
   }
