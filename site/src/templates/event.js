@@ -53,7 +53,7 @@ export default ({ data }) => {
         {event.startTime && <p>Time: {event.startTime}</p>}
         {event.price && <p>Price: {event.price}</p>}
         {event.mainArtist && <p>Artist: {event.mainArtist.name}</p>}
-        {(event.supports.length > 0) && <p>Supports: {event.supports.map(support => (<span>{support.name}</span>))}</p>}
+        {event.supports && (event.supports.length > 0) && <p>Supports: {event.supports.map(support => (<span>{support.name}</span>))}</p>}
         <p>Genre: {genreStr}</p>
         <p>Address: {venue.address}</p>
         {event.infoLink && (
