@@ -55,16 +55,13 @@ async function getCoords(address) {
 }
 
 function compareVenues(existingVenues, venues) {
-	console.log("VENUES")
-	console.log(venues)
-	console.log(existingVenues.length + " venues")
+	console.log(existingVenues.length + " existing venues")
 	const newVenues = venues.filter(url => {
 		if (!(existingVenues.includes(url))) {
 			return url
 		}
 	})
 	console.log(newVenues.length + " new venues")
-	console.log(newVenues)
 	return newVenues;
 }
 
