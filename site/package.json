@@ -39,8 +39,9 @@
     "develop": "gatsby develop",
     "start": "npm run scrape && npm run develop",
     "serve": "gatsby serve",
+    "commitdata": "gac src/data/*.json",
     "scrape": "cd ../scrape && node scrape.js",
-    "scrapebuild": "cd ../scrape && node scrape.js && cd ../site && gatsby build",
+    "scrapebuild": "cd ../scrape && node scrape.js && cd ../site && gatsby build && npm run commitdata",
     "test": "echo \"Write tests! -> https://gatsby.app/unit-testing\""
   },
   "repository": {
