@@ -11,7 +11,6 @@ const DayPage = ({ data, pageContext }) => {
   const events = data.allEvents.edges;
   const date = data.allEvents.edges[0].node.date;
   const genres = data.eventsByGenre.group;
-  console.log(genres)
   const nextDate = pageContext.next;
   const prevDate = pageContext.prev;
   const MELB_CENTER = [-37.8124, 144.9623];
