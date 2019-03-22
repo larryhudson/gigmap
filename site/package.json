@@ -38,9 +38,10 @@
     "develop": "gatsby develop",
     "start": "npm run scrape && npm run develop",
     "serve": "gatsby serve",
+    "setgitconfig": "git config --global user.email 'harryludson@gmail.com' && git config --global user.name 'Larry Hudson'",
     "commitdata": "git commit -a -m 'update data' && git push",
     "scrape": "cd ../scrape && node scrape.js",
-    "scrapebuild": "cd ../scrape && node scrape.js && cd ../site && gatsby build && npm run commitdata",
+    "scrapebuild": "cd ../scrape && node scrape.js && cd ../site && gatsby build && npm run setgitconfig && npm run commitdata",
     "test": "echo \"Write tests! -> https://gatsby.app/unit-testing\""
   },
   "repository": {
