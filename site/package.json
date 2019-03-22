@@ -17,6 +17,7 @@
     "gatsby-source-filesystem": "^2.0.27",
     "gatsby-transformer-json": "^2.1.8",
     "gatsby-transformer-sharp": "^2.1.13",
+    "git-add-and-commit": "^1.2.10",
     "google-map-react": "^1.1.2",
     "lodash": "^4.17.11",
     "lodash.uniq": "^4.5.0",
