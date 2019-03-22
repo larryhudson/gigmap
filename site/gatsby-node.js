@@ -69,7 +69,6 @@ exports.createPages = ({ graphql, actions }) => {
         return { dateVal, dateStr, niceDate }
       }), 'dateVal')
     dates.forEach((date, index) => {
-      console.log(date)
       createPage({
       path: path.join('/day', date.dateStr),
       component: path.resolve('./src/templates/day.js'),
