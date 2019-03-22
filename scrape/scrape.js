@@ -63,6 +63,7 @@ async function main2() {
 	console.log(newEvents.length + " new events")
 	// add new events to existing events
 	var events = existingEvents.concat(newEvents)
+	console.log(events.length + " total events")
 
 	// get info for first 25
 	const unscrapedEvents = events.filter(event => !(event.scraped))
@@ -72,12 +73,13 @@ async function main2() {
 
 	// overwrite old event in array
 	scrapedEvents.forEach(newEvent => {
+		console.log("scraped event: " + newEvent.slug)
 		var eventIndex = events.findIndex(event => { return event.slug === newEvent.slug })
 		events[eventIndex] = newEvent
 	})
 
 	// log new filter and write new JSON
-	console.log(events.filter(e=>e.scraped).length + " events have been scraped")
+	console.log(events.filter(e=>e.scraped).length + " scraped events in the events array")
 
 	// *** VENUES *** 
 	// get existing venues
