@@ -17,7 +17,6 @@ const EventCard = styled(Link)`
   padding: 5px;
   margin-bottom: 10px;
 
-
 @media (min-width: 480px) {
   flex-basis: calc(33.33% - 5px);
   padding: 10px;
