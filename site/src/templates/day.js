@@ -82,7 +82,7 @@ const DayPage = ({ data, pageContext }) => {
       <CardList>
       {genre.edges.map( ({node: event}) => (
         <EventCard key={event.slug} to={event.slug}>
-        <EventTitle>{event.mainArtist.name ? event.mainArtist.name : event.title}</EventTitle>
+        <EventTitle>{event.mainArtist ? event.mainArtist.name : event.title}</EventTitle>
         <EventVenue>{event.venue.name}</EventVenue><br />
         {event.startTime && event.startTime}<br />
         {event.price && (
