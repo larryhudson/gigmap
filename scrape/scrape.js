@@ -3,8 +3,13 @@ const {readJSON, makeJSON} = require('./utils/json')
 const {dayEvents, parseEventPages, parseEventPage} = require('./utils/events')
 const {compareVenues, parseVenues, getUniqueVenueURLs} = require('./utils/venues')
 const combineData = require('./utils/combine')
+const {readJSONfromS3, uploadFile} = require('./utils/s3')
+require('dotenv').config()
 
 const moment = require('moment-timezone')
+const AWS = require('aws-sdk')
+
+var s3 = new AWS.S3();
 
 // WHEN STARTING FROM NOTHING: GET ALL EVENTS AND VENUES.
 function fromScratch() {
@@ -47,7 +52,7 @@ async function main2() {
 	const dates = getDaysFromToday(7)
 	
 	// only keep events that have dates in our range.
-	let eventsFromFile = readJSON('../site/src/data/events.json')
+	let eventsFromFile = await readJSONfromS3(s3, 'events')
 	const existingEvents = cullOldEvents(eventsFromFile, dates)
 	const cullCount = eventsFromFile.length - existingEvents.length
 	console.log( "culled " + cullCount + " old events" )
@@ -83,7 +88,9 @@ async function main2() {
 
 	// *** VENUES *** 
 	// get existing venues
-	let existingVenues = readJSON('../site/src/data/venues.json')
+	// const downloadedVenues = downloadFile(s3, 'venues')
+	// let existingVenues = readJSON('../site/src/data/venues.json')
+	let existingVenues = await readJSONfromS3(s3, 'venues')
 	const existingVenueURLs = existingVenues.map(venue => venue.venueURL)
 	// get all venues from our events
 	const venueURLs = getUniqueVenueURLs(events)
@@ -98,7 +105,9 @@ async function main2() {
 	// add event data to venues, and venue data to events
 	const {combinedEvents, combinedVenues} = combineData(events, venues)
 	makeJSON(combinedEvents, '../site/src/data/events.json')
+	uploadFile(s3, 'events')
 	makeJSON(combinedVenues, '../site/src/data/venues.json')
+	uploadFile(s3, 'venues')
 
 	// 
 
@@ -146,5 +155,3 @@ async function main() {
 	makeJSON(combinedEvents, '../site/src/data/events.json')
 	makeJSON(combinedVenues, '../site/src/data/venues.json')
 }
-
-main2()
