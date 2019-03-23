@@ -7,15 +7,16 @@ import Marker from "../components/Marker"
 import {genreColour} from "../consts/genres"
 import getGenreName from "../consts/genres"
 import styled from 'styled-components'
+import { color } from 'styled-system'
 
 const EventCard = styled(Link)`
   background: lightgray;
   list-style-type: none;
-  color: black;
   flex-basis: calc(50% - 5px);
   font-size: 90%;
   padding: 5px;
   margin-bottom: 10px;
+  text-decoration: none;
 
 @media (min-width: 480px) {
   flex-basis: calc(33.33% - 5px);
@@ -26,7 +27,10 @@ const EventCard = styled(Link)`
 @media (min-width: 768px) {
   flex-basis: calc(25% - 5px);
 }
+${color}
 `
+
+
 
 const CardList = styled.div`
 display: flex;
@@ -78,7 +82,7 @@ const DayPage = ({ data, pageContext }) => {
                 lat={event.venue.coords.lat}
                 lng={event.venue.coords.lng}
                 eventSlug={event.slug}
-                colour={genreColour(event.genre)}
+                bg={genreColour(event.genre)}
       />  
       ))}
     </GoogleMap>
@@ -90,8 +94,8 @@ const DayPage = ({ data, pageContext }) => {
       <div>
       <h3>{getGenreName(genre.fieldValue)} ({genre.totalCount})</h3>
       <CardList>
-      {genre.edges.map( ({node: event}) => (
-        <EventCard key={event.slug} to={event.slug}>
+      {genre.edges.map( ({node: event}) => {
+        return <EventCard key={event.slug} to={event.slug} color='black' bg={'light' + genreColour(event.genre)}>
         <EventTitle>{event.mainArtist ? event.mainArtist.name : event.title}</EventTitle>
         <EventVenue>{event.venue.name}</EventVenue><br />
         {event.startTime && event.startTime}<br />
@@ -99,7 +103,7 @@ const DayPage = ({ data, pageContext }) => {
           (event.price === '$0.00') ? 'Free' : event.price
         )}
         </EventCard>
-        ))}
+        })}
       </CardList>
       </div>
       ))}

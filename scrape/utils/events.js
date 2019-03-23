@@ -32,12 +32,17 @@ async function parseEventPage(event) {
 		const afterSupports = $('h5.label-inline.gigguide_gigdetail-field-label')
 
 		const supportTags = supportLabel.nextUntil(afterSupports)
-		const supports = supportTags.map((index, tag) => {
+		let supports = undefined;
+		const supportsMap = supportTags.map((index, tag) => {
 			const aTag = $(tag).find('a')
 			const name = aTag.text()
 			const slug = aTag.attr('href').replace('/category/gig-support/', '')
 			return {name, slug}
 		}).get()
+
+		if (supportsMap.length > 0) {
+			supports = supportsMap
+		}
 
 		// info link:
 		const infoLinkTag = $('.gigguide_node-summary-detail.buy-tickets-button a').eq(0)

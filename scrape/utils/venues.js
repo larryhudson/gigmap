@@ -50,7 +50,7 @@ async function getCoords(address) {
 			return response.json.results[0].geometry.location
 		})
 		.catch(err => {
-			return 'err'
+			return undefined
 		});
 }
 

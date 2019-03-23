@@ -7,22 +7,22 @@ const genres = [
 'colour': 'blue'},
 {'id': 'arts-theatre-burlesque-markets', 
 'name': 'Arts, Theatre, Burlesque & Markets',
-'colour': 'brown'},
+'colour': 'green'},
 {'id': 'hip-hop-r-b',
 'name': 'Hip Hop & R&B',
-'colour': 'green'},
+'colour': 'violet'},
 {'id': 'house-electro-trance-club-nights',
 'name': 'House, Electro, Trance & Club Nights',
-'colour': 'yellow'},
+'colour': 'cyan'},
 {'id': 'indie-rock-pop-metal-punk-covers',
 'name': 'Indie, Rock, Pop, Metal, Punk & Covers',
-'colour': 'purple'},
+'colour': 'yellow'},
 {'id': 'acoustic-country-blues-folk',
 'name': 'Acoustic, Country, Blues & Folk',
-'colour': '#FFF'},
+'colour': 'orange'},
 {'id': 'trivia-gaming',
 'name': 'Trivia & Gaming',
-'colour': 'black'}
+'colour': 'pink'}
 ]
 
 export default function getGenreName(id) {
