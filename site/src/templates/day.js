@@ -9,33 +9,44 @@ import getGenreName from "../consts/genres"
 import styled from 'styled-components'
 
 const EventCard = styled(Link)`
-width: 250px;
-min-height: 150px;
-padding: 15px;
-list-style-type: none;
-background: lightgray;
-margin: 20px;
-margin-top: 0;
-margin-left: 0;
-color: black;
+  background: lightgray;
+  list-style-type: none;
+  color: black;
+  flex-basis: calc(50% - 5px);
+  font-size: 90%;
+  padding: 5px;
+  margin-bottom: 10px;
+
+
+@media (min-width: 480px) {
+  flex-basis: calc(33.33% - 5px);
+  padding: 10px;
+  font-size: 100%;
+}
+
+@media (min-width: 768px) {
+  flex-basis: calc(25% - 5px);
+}
 `
 
 const CardList = styled.div`
 display: flex;
 flex-direction: row;
 flex-wrap: wrap;
-max-width: 72em;
-align-items: center;
-margin-top: 0;
+justify-content: space-between;
 `
 
 const EventTitle = styled.h4`
 margin-bottom: 0.5em;
 line-height: 1.5;
+font-size: 90%;
+
+@media (min-width: 480px) {
+  font-size: 100%;
+}
 `
 
 const EventVenue = styled.span`
-margin-top: auto;
 `
 
 const DayPage = ({ data, pageContext }) => {
