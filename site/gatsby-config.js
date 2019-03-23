@@ -4,6 +4,10 @@ module.exports = {
     description: `Kick off your next, great Gatsby project with this default starter. This barebones starter ships with the main Gatsby configuration files you might need.`,
     author: `@gatsbyjs`,
   },
+  // mapping: {
+  //   'EventsJson.venue': 'VenuesJson.venueURL',
+  //   'VenuesJson.events': 'EventsJson.slug'
+  // },
   plugins: [
     `gatsby-plugin-react-helmet`,
     {

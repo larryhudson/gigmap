@@ -4,6 +4,18 @@ import Layout from "../components/layout"
 import genreName from "../consts/genres"
 import moment from "moment"
 import SEO from "../components/seo"
+import styled from 'styled-components';
+
+const SupportList = styled.ul`
+margin-left: 10px;
+display: inline;
+`
+
+const Support = styled.li`
+display: inline;
+margin-right: 15px;
+`
+
 
 export default ({ data }) => {
 
@@ -53,7 +65,7 @@ export default ({ data }) => {
         {event.startTime && <p>Time: {event.startTime}</p>}
         {event.price && <p>Price: {event.price}</p>}
         {event.mainArtist && <p>Artist: {event.mainArtist.name}</p>}
-        {event.supports && (event.supports.length > 0) && <p>Supports: {event.supports.map(support => (<span>{support.name}</span>))}</p>}
+        {event.supports && (event.supports.length > 0) && <p>Supports: <SupportList>{event.supports.map(support => (<Support>{support.name}</Support>))}</SupportList></p>}
         <p>Genre: {genreStr}</p>
         <p>Address: {venue.address}</p>
         {event.infoLink && (

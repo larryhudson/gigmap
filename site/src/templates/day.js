@@ -6,6 +6,37 @@ import GoogleMap from "../components/GoogleMap"
 import Marker from "../components/Marker"
 import {genreColour} from "../consts/genres"
 import getGenreName from "../consts/genres"
+import styled from 'styled-components'
+
+const EventCard = styled(Link)`
+width: 250px;
+min-height: 150px;
+padding: 15px;
+list-style-type: none;
+background: lightgray;
+margin: 20px;
+margin-top: 0;
+margin-left: 0;
+color: black;
+`
+
+const CardList = styled.div`
+display: flex;
+flex-direction: row;
+flex-wrap: wrap;
+max-width: 72em;
+align-items: center;
+margin-top: 0;
+`
+
+const EventTitle = styled.h4`
+margin-bottom: 0.5em;
+line-height: 1.5;
+`
+
+const EventVenue = styled.span`
+margin-top: auto;
+`
 
 const DayPage = ({ data, pageContext }) => {
   const events = data.allEvents.edges;
@@ -48,11 +79,18 @@ const DayPage = ({ data, pageContext }) => {
     {genres.map( genre => (
       <div>
       <h3>{getGenreName(genre.fieldValue)} ({genre.totalCount})</h3>
-      <ul>
+      <CardList>
       {genre.edges.map( ({node: event}) => (
-        <li key={event.slug}><Link to={event.slug}>{event.title} at {event.venue.name}{event.price && ' '+event.price}</Link></li>
+        <EventCard key={event.slug} to={event.slug}>
+        <EventTitle>{event.mainArtist.name ? event.mainArtist.name : event.title}</EventTitle>
+        <EventVenue>{event.venue.name}</EventVenue><br />
+        {event.startTime && event.startTime}<br />
+        {event.price && (
+          (event.price === '$0.00') ? 'Free' : event.price
+        )}
+        </EventCard>
         ))}
-      </ul>
+      </CardList>
       </div>
       ))}
   </Layout>
@@ -71,6 +109,13 @@ export const pageQuery = graphql`
           slug
           title
           genre
+          mainArtist {
+            name
+          }
+          startTime
+          supports {
+            name
+          }
           date(formatString: "dddd DD MMMM")
           price
           venue {
