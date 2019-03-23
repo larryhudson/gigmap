@@ -2,8 +2,8 @@ const getDaysFromToday = require('./utils/dates')
 const {readJSON, makeJSON} = require('./utils/json')
 const {dayEvents, parseEventPages, parseEventPage} = require('./utils/events')
 const {compareVenues, parseVenues, getUniqueVenueURLs} = require('./utils/venues')
-const combineData = require('./utils/combine')
-const {readJSONfromS3, uploadFile} = require('./utils/s3')
+const {combineData, uncombineData} = require('./utils/combine')
+const {readJSONfromS3, uploadFiles} = require('./utils/s3')
 require('dotenv').config()
 
 const moment = require('moment-timezone')
@@ -101,13 +101,10 @@ async function main2() {
 	// add new venues to the old venues
 	const venues = existingVenues.concat(newVenues)
 
-	// *** COMBINE DATA ***
-	// add event data to venues, and venue data to events
 	const {combinedEvents, combinedVenues} = combineData(events, venues)
-	makeJSON(combinedEvents, '../site/src/data/events.json')
-	const uploadEvents = await uploadFile(s3, 'events')
-	makeJSON(combinedVenues, '../site/src/data/venues.json')
-	const uploadVenues = await uploadFile(s3, 'venues')
+	const makeEventsJSON = await makeJSON(combinedEvents, '../site/src/data/events.json')
+	const makeVenuesJSON = await makeJSON(combinedVenues, '../site/src/data/venues.json')
+	const uploadedFiles = await uploadFiles(s3)
 
 	// 
 

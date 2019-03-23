@@ -29,7 +29,25 @@ function combineData(events, venues) {
 	return {combinedEvents, combinedVenues}
 }
 
-module.exports = combineData
+function uncombineData(events, venues) {
+	const simpleEvents = events.map(event => {
+		let simpleEvent = clone(event)
+		if (!(simpleEvent.venue === undefined)) {
+			delete simpleEvent.venue
+		}
+		return simpleEvent
+	})
+	const simpleVenues = venues.map(venue => {
+		let simpleVenue = clone(venue)
+		if (!(simpleVenue.events === undefined)) {
+			delete simpleVenue.events
+		}
+		return simpleVenue
+	})
+	return {simpleEvents, simpleVenues}
+}
+
+module.exports = {combineData, uncombineData}
 
 
 
