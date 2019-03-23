@@ -105,14 +105,16 @@ async function main2() {
 	// add event data to venues, and venue data to events
 	const {combinedEvents, combinedVenues} = combineData(events, venues)
 	makeJSON(combinedEvents, '../site/src/data/events.json')
-	uploadFile(s3, 'events')
+	const uploadEvents = await uploadFile(s3, 'events')
 	makeJSON(combinedVenues, '../site/src/data/venues.json')
-	uploadFile(s3, 'venues')
+	const uploadVenues = await uploadFile(s3, 'venues')
 
 	// 
 
 
 }
+
+main2()
 // Get dates for the next 7 days. Same as before.
 
 // Load in existing events file. Delete events with dates not in our dates range.

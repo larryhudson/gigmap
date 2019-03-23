@@ -14,7 +14,6 @@ const filePath = '../site/src/data/' + array + '.json'
   .promise()
   .then(res => {
   	console.log("uploaded file: " + array + ".json")
-  	console.log(res)
   })
   .catch(e => {
   	console.log("error: ")
@@ -23,28 +22,12 @@ const filePath = '../site/src/data/' + array + '.json'
 
 }
 
-async function getS3File(filename) {
-  const params = {
-    Bucket: 'some-bucket-name',
-    Key: filename,
-    Body: fileIO,
-  };
-
-  const response = await s3.getObject(params, (err) => {
-    if (err) {
-      // handle errors
-    }
-  }).promise();
-
-  return JSON.parse(response.Body.toString()); // your file as a string
-}
-
 const readJSONfromS3 = (s3, array) => {
 	var params = {Bucket: bucketName,
 				  Key: (array + '.json')};
   	return s3.getObject(params).promise()
   	.then(response => {
-  		console.log(response.Body.toString())
+  		console.log("got file from S3: " + array + '.json')
   		return JSON.parse(response.Body.toString())
   	}).
   	catch(e => {
