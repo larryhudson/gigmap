@@ -29,24 +29,6 @@ const IndexPage = ({ data }) => {
       <li><Link to={'/day/' + date.dateStr}>{date.niceDate}</Link></li>
       ))}
     </ul>
-    <h2>All venues</h2>
-    <div style={{width: '100%', height: '600px', marginBottom: '2em'}}>
-    <GoogleMap
-      defaultZoom={12}
-      defaultCenter={MELB_CENTER}
-      yesIWantToUseGoogleMapApiInternals
-    >
-    {mapVenues.map( ({node: venue}) => (
-      <Marker
-                key={venue.id}
-                text={venue.name}
-                lat={venue.coords.lat}
-                lng={venue.coords.lng}
-                venueId={venue.id}
-      />  
-      ))}
-    </GoogleMap>
-    </div>
   </Layout>
 )}
 

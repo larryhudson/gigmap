@@ -6,22 +6,15 @@ import Marker from '../components/Marker';
 import {genreColour, getGenreName} from '../consts/genres';
 
 // examples:
-import GoogleMap from '../components/GoogleMap';
+import GoogleMapReact from 'google-map-react';
 import styled from 'styled-components';
-import {space} from 'styled-system';
 
-const CheckboxContainer = styled.div`
-background: ${props => props.bg ? props.bg : 'lightgray'};
+const Wrapper = styled.main`
+  width: 100%;
+  height: 500px;
+  margin-bottom: 10px;
+`;
 
-input {
-  margin-right: 0.75em;
-}
-
-label {
-  display: block;
-}
-${space}
-`
 
 const MELB_CENTER = [-37.8124, 144.9623];
 
@@ -48,62 +41,69 @@ const bindResizeListener = (map, maps, bounds) => {
 };
 
 // Fit map to its bounds after the api is loaded
-const apiIsLoaded = (map, maps, places) => {
+const apiIsLoaded = (map, maps, events) => {
   // Get bounds by our places
-  const bounds = getMapBounds(map, maps, places);
+  const bounds = getMapBounds(map, maps, events);
   // Fit map to bounds
   map.fitBounds(bounds);
   // Bind the resize listener
   bindResizeListener(map, maps, bounds);
 };
 
+// Fit map to its bounds after the api on change
+const setBounds = (map, maps, events) => {
+  // Get bounds by our places
+  const bounds = getMapBounds(map, maps, events);
+  // Fit map to bounds
+  map.fitBounds(bounds);
+};
+
 class MainMap extends Component {
   constructor(props) {
-    super(props);
-
-    this.state = {
-      showingGenreIds: this.props.genres.map(genre => genre.fieldValue),
-    };
-
-    this.handleInputChange = this.handleInputChange.bind(this);
+    super(props)
+    this.map = React.createRef()
   }
 
-  handleInputChange(event) {
-    const target = event.target;
-    const value = target.type === 'checkbox' ? target.checked : target.value;
-    const genreId = target.name;
-
-    if (value === true) {
-      this.setState(previousState => ({
-      showingGenreIds: [...previousState.showingGenreIds, genreId]
-    }));
-    } else {
-      this.setState(previousState => {
-      const newGenres = previousState.showingGenreIds.filter(genre => !(genre === genreId))
-      return {
-      showingGenreIds: newGenres
-    }});
+  componentDidUpdate(prevProps) {
+  // Typical usage (don't forget to compare props):
+  if (this.props.genres !== prevProps.genres) {
+    const bounds = new window.google.maps.LatLngBounds()
+    this.props.genres.forEach(genre => {
+      genre.edges.forEach(event => {
+        bounds.extend(new window.google.maps.LatLng(
+          event.node.venue.coords.lat,
+          event.node.venue.coords.lng
+      ));
+      })
+    })
+    if (this.map.current && this.map.current.map_) {
+      this.map.current.map_.fitBounds(bounds)
     }
   }
+}
 
   render() {
-    const { showingGenreIds } = this.state;
+    console.log(this.map)
     const { genres } = this.props;
     let showingEvents = []
-    const showingGenres = genres.filter(genre => showingGenreIds.includes(genre.fieldValue))
-    showingGenres.forEach(genre => {
+    genres.forEach(genre => {
       genre.edges.forEach(event => {
         showingEvents.push(event)
       })
     })
+
     return (
-      <Fragment>
-        {!isEmpty(showingGenres) && (
-          <GoogleMap
+      <Wrapper>
+        {!isEmpty(genres) && (
+          <GoogleMapReact
             defaultZoom={10}
             defaultCenter={MELB_CENTER}
+            bootstrapURLKeys={{
+            key: process.env.REACT_APP_MAP_KEY,
+            }}
             onGoogleApiLoaded={({ map, maps }) => apiIsLoaded(map, maps, showingEvents)}
             yesIWantToUseGoogleMapApiInternals
+            ref={this.map}
           >
             {showingEvents.map( ({node: event}) => {
               return <Marker
@@ -115,26 +115,9 @@ class MainMap extends Component {
               bg={genreColour(event.genre)}
           />
           })}
-          </GoogleMap>
+          </GoogleMapReact>
         )}
-        {genres.map(genre => {
-          let genreId = genre.fieldValue;
-          let isShowing = (this.state.showingGenreIds.includes(genreId))
-          return (<CheckboxContainer key={'checkbox-' + genreId} bg={genreColour(genre.fieldValue, 0.25)} p={['1','2']}>
-                  <label>
-                  <input
-                    name={genreId}
-                    type="checkbox"
-                    checked={isShowing}
-                    onChange={this.handleInputChange} />
-                  {getGenreName(genreId)}
-                  </label>
-                  </CheckboxContainer>
-                )
-          }
-          )}
-
-      </Fragment>
+      </Wrapper>
     );
   }
 }
