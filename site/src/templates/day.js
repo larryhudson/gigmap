@@ -2,19 +2,24 @@ import React from "react"
 import { Link, graphql } from 'gatsby'
 import Layout from "../components/layout"
 import SEO from "../components/seo"
-import GoogleMap from "../components/GoogleMap"
-import Marker from "../components/Marker"
-import {genreColour} from "../consts/genres"
-import getGenreName from "../consts/genres"
+import MainMap from "../components/MainMap"
+import {getGenreName, genreColour} from "../consts/genres"
 import styled from 'styled-components'
-import { color } from 'styled-system'
+import { space } from 'styled-system'
+
+
+const GenreHeading = styled.h3`
+background: ${props => props.bg ? props.bg : 'lightgray'};
+${space}
+`
 
 const EventCard = styled(Link)`
-  background: lightgray;
+  background: ${props => props.bg ? props.bg : 'lightgray'};
   list-style-type: none;
   flex-basis: calc(50% - 5px);
   font-size: 90%;
   padding: 5px;
+  color: black;
   margin-bottom: 10px;
   text-decoration: none;
 
@@ -27,10 +32,7 @@ const EventCard = styled(Link)`
 @media (min-width: 768px) {
   flex-basis: calc(25% - 5px);
 }
-${color}
 `
-
-
 
 const CardList = styled.div`
 display: flex;
@@ -53,12 +55,12 @@ const EventVenue = styled.span`
 `
 
 const DayPage = ({ data, pageContext }) => {
-  const events = data.allEvents.edges;
+  // const events = data.allEvents.edges;
   const date = data.allEvents.edges[0].node.date;
   const genres = data.eventsByGenre.group;
   const nextDate = pageContext.next;
   const prevDate = pageContext.prev;
-  const MELB_CENTER = [-37.8124, 144.9623];
+  // const MELB_CENTER = [-37.8124, 144.9623];
   return (
   <Layout>
     <SEO title={date} keywords={[`music`, `melbourne`]} />
@@ -69,33 +71,26 @@ const DayPage = ({ data, pageContext }) => {
     {nextDate && (
       <p>Next: <Link to={"/day/" + nextDate.dateStr}>{nextDate.niceDate}</Link></p>
     )}
-    <div style={{width: '100%', height: '600px', marginBottom: '2em'}}>
-    <GoogleMap
-      defaultZoom={12}
-      defaultCenter={MELB_CENTER}
-      yesIWantToUseGoogleMapApiInternals
-    >
-    {events.map( ({node: event}) => (
-      <Marker
-                key={event.slug}
-                text={event.venue.name}
-                lat={event.venue.coords.lat}
-                lng={event.venue.coords.lng}
-                eventSlug={event.slug}
-                bg={genreColour(event.genre)}
-      />  
-      ))}
-    </GoogleMap>
+    <div style={{width: '100%', height: 'auto', marginBottom: '2em'}}>
+    <MainMap genres={genres} />
     </div>
     <h2>{date}</h2>
-    
-
+    {/*<h3>Jump to genre</h3>
     {genres.map( genre => (
-      <div>
-      <h3>{getGenreName(genre.fieldValue)} ({genre.totalCount})</h3>
+      <GenreHeading p={['2','3']} key={'jump-to-' + genre.fieldValue}
+      bg={genreColour(genre.fieldValue, 0.1)}>
+        <a href={"#" + genre.fieldValue}>
+        {getGenreName(genre.fieldValue)} ({genre.totalCount})
+        </a>
+      </GenreHeading>
+    ))}
+  */}
+    {genres.map( genre => (
+      <div key={'genre-events-' + genre.fieldValue}>
+      <GenreHeading p={['2','3']} id={genre.fieldValue} bg={genreColour(genre.fieldValue, 0.1)}>{getGenreName(genre.fieldValue)} ({genre.totalCount})</GenreHeading>
       <CardList>
       {genre.edges.map( ({node: event}) => {
-        return <EventCard key={event.slug} to={event.slug} color='black' bg={'light' + genreColour(event.genre)}>
+        return <EventCard key={event.slug} to={event.slug} color='black' bg={genreColour(event.genre, 0.1)}>
         <EventTitle>{event.mainArtist ? event.mainArtist.name : event.title}</EventTitle>
         <EventVenue>{event.venue.name}</EventVenue><br />
         {event.startTime && event.startTime}<br />

@@ -7,6 +7,7 @@
   "dependencies": {
     "@google/maps": "^0.5.5",
     "cheerio": "^1.0.0-rc.2",
+    "chroma-js": "^2.0.3",
     "gatsby": "^2.1.4",
     "gatsby-image": "^2.0.29",
     "gatsby-plugin-buildtime-timezone": "^1.0.3",
@@ -19,6 +20,7 @@
     "gatsby-transformer-sharp": "^2.1.13",
     "google-map-react": "^1.1.2",
     "lodash": "^4.17.11",
+    "lodash.isempty": "^4.4.0",
     "lodash.uniq": "^4.5.0",
     "lodash.uniqby": "^4.7.0",
     "palx": "^1.0.3",

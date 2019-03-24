@@ -1,23 +1,38 @@
 import React, { Component, Fragment } from 'react';
 import isEmpty from 'lodash.isempty';
-import { StaticQuery, graphql } from "gatsby"
 
 // components:
 import Marker from '../components/Marker';
+import {genreColour, getGenreName} from '../consts/genres';
 
 // examples:
 import GoogleMap from '../components/GoogleMap';
+import styled from 'styled-components';
+import {space} from 'styled-system';
+
+const CheckboxContainer = styled.div`
+background: ${props => props.bg ? props.bg : 'lightgray'};
+
+input {
+  margin-right: 0.75em;
+}
+
+label {
+  display: block;
+}
+${space}
+`
 
 const MELB_CENTER = [-37.8124, 144.9623];
 
 // Return map bounds based on list of places
-const getMapBounds = (map, maps, places) => {
+const getMapBounds = (map, maps, events) => {
   const bounds = new maps.LatLngBounds();
 
-  places.forEach((place) => {
+  events.forEach((event) => {
     bounds.extend(new maps.LatLng(
-      place.geometry.location.lat,
-      place.geometry.location.lng,
+      event.node.venue.coords.lat,
+      event.node.venue.coords.lng,
     ));
   });
   return bounds;
@@ -47,37 +62,78 @@ class MainMap extends Component {
     super(props);
 
     this.state = {
-      places: [],
+      showingGenreIds: this.props.genres.map(genre => genre.fieldValue),
     };
+
+    this.handleInputChange = this.handleInputChange.bind(this);
   }
 
-  componentDidMount() {
-    fetch('src/data/venues.json')
-      .then(response => response.json())
-      .then(data => this.setState({ places: data.results }));
+  handleInputChange(event) {
+    const target = event.target;
+    const value = target.type === 'checkbox' ? target.checked : target.value;
+    const genreId = target.name;
+
+    if (value === true) {
+      this.setState(previousState => ({
+      showingGenreIds: [...previousState.showingGenreIds, genreId]
+    }));
+    } else {
+      this.setState(previousState => {
+      const newGenres = previousState.showingGenreIds.filter(genre => !(genre === genreId))
+      return {
+      showingGenreIds: newGenres
+    }});
+    }
   }
 
   render() {
-    const { places } = this.state;
+    const { showingGenreIds } = this.state;
+    const { genres } = this.props;
+    let showingEvents = []
+    const showingGenres = genres.filter(genre => showingGenreIds.includes(genre.fieldValue))
+    showingGenres.forEach(genre => {
+      genre.edges.forEach(event => {
+        showingEvents.push(event)
+      })
+    })
     return (
       <Fragment>
-        {!isEmpty(places) && (
+        {!isEmpty(showingGenres) && (
           <GoogleMap
             defaultZoom={10}
             defaultCenter={MELB_CENTER}
+            onGoogleApiLoaded={({ map, maps }) => apiIsLoaded(map, maps, showingEvents)}
             yesIWantToUseGoogleMapApiInternals
-            onGoogleApiLoaded={({ map, maps }) => apiIsLoaded(map, maps, places)}
           >
-            {places.map(place => (
-              <Marker
-                key={place.id}
-                text={place.name}
-                lat={place.coords.lat}
-                lng={place.coords.lng}
-              />
-            ))}
+            {showingEvents.map( ({node: event}) => {
+              return <Marker
+              key={event.slug}
+              text={event.venue.name}
+              lat={event.venue.coords.lat}
+              lng={event.venue.coords.lng}
+              eventSlug={event.slug}
+              bg={genreColour(event.genre)}
+          />
+          })}
           </GoogleMap>
         )}
+        {genres.map(genre => {
+          let genreId = genre.fieldValue;
+          let isShowing = (this.state.showingGenreIds.includes(genreId))
+          return (<CheckboxContainer key={'checkbox-' + genreId} bg={genreColour(genre.fieldValue, 0.25)} p={['1','2']}>
+                  <label>
+                  <input
+                    name={genreId}
+                    type="checkbox"
+                    checked={isShowing}
+                    onChange={this.handleInputChange} />
+                  {getGenreName(genreId)}
+                  </label>
+                  </CheckboxContainer>
+                )
+          }
+          )}
+
       </Fragment>
     );
   }

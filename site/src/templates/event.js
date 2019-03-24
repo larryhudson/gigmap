@@ -1,10 +1,10 @@
 import React from "react"
 import { graphql, Link } from "gatsby"
 import Layout from "../components/layout"
-import genreName from "../consts/genres"
+import {getGenreName} from "../consts/genres"
 import moment from "moment"
 import SEO from "../components/seo"
-import styled from 'styled-components';
+import styled from 'styled-components'
 
 const SupportList = styled.ul`
 margin-left: 10px;
@@ -53,7 +53,7 @@ export default ({ data }) => {
   const date = data.eventsJson.date;
   const dateStr = moment(date).format('DD-MM-YYYY')
   const niceDate = moment(date).format('dddd DD MMMM')
-  const genreStr = genreName(event.genre)
+  const genreStr = getGenreName(event.genre)
   
   return (
     <Layout>

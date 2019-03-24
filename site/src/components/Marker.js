@@ -3,15 +3,15 @@ import {Component} from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import {navigate} from "gatsby";
-import {color} from 'styled-system';
 
 const Wrapper = styled.div`
   position: absolute;
   top: 50%;
   left: 50%;
-  width: 18px;
-  height: 18px;
-  border: 1px solid #fff;
+  width: 20px;
+  height: 20px;
+  border: 2px solid #000;
+  background-color: ${props => props.bg}
   border-radius: 100%;
   user-select: none;
   transform: translate(-50%, -50%);
@@ -19,7 +19,6 @@ const Wrapper = styled.div`
   &:hover {
     z-index: 1;
   }
-  ${color}
 `;
 
 class Marker extends Component {
@@ -35,7 +34,7 @@ class Marker extends Component {
     return <Wrapper
     alt={this.props.text}
     onClick={this.handleClick.bind(this)}
-    bg={'dark' + this.props.bg}
+    bg={this.props.bg}
     />
   }
 }
