@@ -45,14 +45,18 @@ class DayPage extends React.Component {
 
   constructor(props) {
     super(props)
-    if (props.location.state) {
-      this.state = {
-        showingGenres: this.props.location.state.showingGenres
-      }
-    } else {
-      this.state = {
-        showingGenres: this.props.data.eventsByGenre.group
-      }
+    // if (props.location.state) {
+    //   this.state = {
+    //     showingGenres: this.props.location.state.showingGenres
+    //   }
+    // } else {
+    //   this.state = {
+    //     showingGenres: this.props.data.eventsByGenre.group
+    //   }
+    // }
+
+    this.state = {
+      showingGenres: this.props.data.eventsByGenre.group
     }
 
     this.handleGenreChange = this.handleGenreChange.bind(this);
@@ -81,7 +85,7 @@ class DayPage extends React.Component {
 
   render() {
 
-  const {data, pageContext} = this.props
+  const {data, pageContext} = this.props;
   const date = data.allEvents.edges[0].node.date;
   const genres = data.eventsByGenre.group;
   const {showingGenres} = this.state
