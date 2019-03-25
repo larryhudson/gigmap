@@ -11,7 +11,7 @@ const Wrapper = styled.div`
   width: 20px;
   height: 20px;
   border: 2px solid #000;
-  background-color: ${props => props.bg}
+  background-color: ${props => props.bg};
   border-radius: 100%;
   user-select: none;
   transform: translate(-50%, -50%);
