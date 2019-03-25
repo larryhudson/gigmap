@@ -1,5 +1,5 @@
 import React from "react"
-import { Link, graphql } from 'gatsby'
+import { graphql } from 'gatsby'
 import Layout from "../components/layout"
 import SEO from "../components/seo"
 import MainMap from "../components/MainMap"
@@ -7,6 +7,7 @@ import {getGenreName, genreColour} from "../consts/genres"
 import styled from 'styled-components'
 import { space } from 'styled-system'
 import GenreEventsList from '../components/GenreEventsList'
+import DayNav from '../components/DayNav'
 
 function sortById(a,b) {
   if (a.fieldValue < b.fieldValue)
@@ -24,7 +25,7 @@ justify-content: space-between;
 `
 
 const CheckboxContainer = styled.div`
-background: ${props => props.bg ? props.bg : 'lightgray'};
+background: ${props => props.ticked ? props.genreColour : '#ededed'};
 flex-basis: calc(50% - 5px);
 margin-bottom: 10px;
 padding-top:10px;
@@ -84,37 +85,28 @@ class DayPage extends React.Component {
   }
 
   render() {
-
   const {data, pageContext} = this.props;
-  const date = data.allEvents.edges[0].node.date;
   const genres = data.eventsByGenre.group;
   const {showingGenres} = this.state
   if (showingGenres) {
     showingGenres.sort(sortById)
   }
-  const nextDate = pageContext.next;
-  const prevDate = pageContext.prev;
+  const {nextDate, date, prevDate} = pageContext
   // const events = data.allEvents.edges;
   // const MELB_CENTER = [-37.8124, 144.9623];
   return (
   <Layout>
     <SEO title={date} keywords={[`music`, `melbourne`]} />
-    <h1>Gigs on {date}</h1>
-    {prevDate && (
-    <p>Previous: <Link to={"/day/" + prevDate.dateStr} state={{showingGenres: this.state.showingGenres}}>{prevDate.niceDate}</Link></p>
-    )}
-    {nextDate && (
-      <p>Next: <Link to={"/day/" + nextDate.dateStr} state={{showingGenres: this.state.showingGenres}}>{nextDate.niceDate}</Link></p>
-    )}
-    <div style={{width: '100%', height: 'auto', marginBottom: '2em'}}>
+    <DayNav prevDate={prevDate} date={date} nextDate={nextDate} />
+    <div style={{width: '100%', height: 'auto', marginBottom: '0.5em'}}>
     <MainMap genres={showingGenres} />
     </div>
-    <h3 style={{marginBottom: '10px'}}>Filter by genre</h3>
+    <h3 style={{marginBottom: '0.5em'}}>Filter by genre</h3>
     <CheckboxList>
     {genres.map(genre => {
       let genreId = genre.fieldValue;
       let isShowing = (showingGenres ? showingGenres.includes(genre) : true)
-      return (<CheckboxContainer key={'checkbox-' + date + genreId} bg={genreColour(genre.fieldValue, 0.25)} p={['1','2']}>
+      return (<CheckboxContainer key={'checkbox-' + date + genreId} ticked={isShowing} genreColour={genreColour(genre.fieldValue, 0.25)} p={['1','2']}>
               <label>
               <input
                 name={genreId}

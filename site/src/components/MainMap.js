@@ -12,7 +12,7 @@ import styled from 'styled-components';
 const Wrapper = styled.main`
   width: 100%;
   height: 500px;
-  margin-bottom: 10px;
+  margin-bottom: 0;
 `;
 
 
@@ -83,7 +83,6 @@ class MainMap extends Component {
 }
 
   render() {
-    console.log(this.map)
     const { genres } = this.props;
     let showingEvents = []
     genres.forEach(genre => {

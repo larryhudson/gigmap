@@ -18,7 +18,7 @@ exports.createPages = ({ graphql, actions }) => {
   const { createPage } = actions
   return graphql(`
     {
-      allEventsJson
+      allEvents: allEventsJson
       (sort: {fields: [date], order: ASC} ) {
 	    edges {
 	      node {
@@ -28,7 +28,7 @@ exports.createPages = ({ graphql, actions }) => {
 	      }
 	    }
 	  }
-    allVenuesJson {
+    allVenues: allVenuesJson {
       edges {
         node {
           id
@@ -36,9 +36,14 @@ exports.createPages = ({ graphql, actions }) => {
         }
       }
     }
+    dates: allEventsJson {
+    group(field: date) {
+      fieldValue
     }
+  }
+}
   `).then(result => {
-    result.data.allEventsJson.edges.forEach(({ node }) => {
+    result.data.allEvents.edges.forEach(({ node }) => {
       createPage({
         path: node.slug,
         component: path.resolve(`./src/templates/event.js`),
@@ -50,7 +55,7 @@ exports.createPages = ({ graphql, actions }) => {
         },
       })
     })
-    result.data.allVenuesJson.edges.forEach(({ node }) => {
+    result.data.allVenues.edges.forEach(({ node }) => {
       createPage({
         path: node.id,
         component: path.resolve(`./src/templates/venue.js`),
@@ -62,20 +67,18 @@ exports.createPages = ({ graphql, actions }) => {
         },
       })
     })
-    const dates = uniqBy(result.data.allEventsJson.edges.map(({node}) => {
-        const dateVal = node.date
-        const dateStr = moment(node.date).format('DD-MM-YYYY')
-        const niceDate = moment(node.date).format('dddd D MMMM')
-        return { dateVal, dateStr, niceDate }
-      }), 'dateVal')
+    const dates = result.data.dates.group.map(({fieldValue}) => {
+        return fieldValue
+      })
     dates.forEach((date, index) => {
+      let dateStr = moment(date).format('DD-MM-YYYY')
       createPage({
-      path: path.join('/day', date.dateStr),
+      path: (index === 0 ? '/' : path.join('/day', dateStr)),
       component: path.resolve('./src/templates/day.js'),
       context: {
-        date: date.dateVal,
-        prev: index === 0 ? null : dates[index - 1],
-        next: index === (dates.length - 1) ? null : dates[index + 1]
+        date: date,
+        prevDate: index === 0 ? null : dates[index - 1],
+        nextDate: index === (dates.length - 1) ? null : dates[index + 1]
       }
       })
     })
