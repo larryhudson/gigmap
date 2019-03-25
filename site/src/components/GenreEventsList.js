@@ -64,7 +64,7 @@ class GenreEventsList extends React.Component {
 	      <CardList>
 	      {genre.edges.map( ({node: event}) => {
 		        return <EventCard key={event.slug} to={event.slug} color='black' bg={genreColour(event.genre, 0.25)}>
-		        <EventTitle>{event.mainArtist ? event.mainArtist.name : event.title}</EventTitle>
+		        <EventTitle>{event.title}</EventTitle>
 		        <EventVenue>{event.venue.name}</EventVenue><br />
 		        {event.startTime && event.startTime}<br />
 		        {event.price && (
