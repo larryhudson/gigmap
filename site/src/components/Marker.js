@@ -2,7 +2,6 @@ import React from 'react';
 import {Component} from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
-import {navigate} from "gatsby";
 
 const Wrapper = styled.div`
   position: absolute;
@@ -22,20 +21,11 @@ const Wrapper = styled.div`
 `;
 
 class Marker extends Component {
-  handleClick() {
-    if (this.props.venueId) {
-      navigate(this.props.venueId);
-    }
-    if (this.props.eventSlug) {
-      navigate(this.props.eventSlug);
-    }
-  }
   render() {
     return <Wrapper
-    alt={this.props.text}
-    onClick={this.handleClick.bind(this)}
-    bg={this.props.bg}
-    />
+    alt={this.props.venue}
+    bg={this.props.bg}>
+    </Wrapper>
   }
 }
 
@@ -46,7 +36,7 @@ Marker.defaultProps = {
 
 Marker.propTypes = {
   onClick: PropTypes.func,
-  text: PropTypes.string.isRequired,
+  venue: PropTypes.string,
 };
 
 export default Marker;

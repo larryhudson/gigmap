@@ -60,7 +60,7 @@ export default ({ data }) => {
     <SEO title={event.title} keywords={[`music`, `melbourne`]} />
       <div>
         <h1>{event.title}</h1>
-        <p>Venue: <Link to={venue.id}>{venue.name}</Link></p>
+        <p>Venue: <Link to={'/' + venue.id}>{venue.name}</Link></p>
         <p>Date: <Link to={'/day/' + dateStr}>{niceDate}</Link></p>
         {event.startTime && <p>Time: {event.startTime}</p>}
         {event.price && <p>Price: {event.price}</p>}

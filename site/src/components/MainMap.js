@@ -1,9 +1,10 @@
-import React, { Component, Fragment } from 'react';
+import React, { Component } from 'react';
 import isEmpty from 'lodash.isempty';
 
 // components:
 import Marker from '../components/Marker';
-import {genreColour, getGenreName} from '../consts/genres';
+import Balloon, {CloseBalloon} from '../components/Balloon';
+import {genreColour} from '../consts/genres';
 
 // examples:
 import GoogleMapReact from 'google-map-react';
@@ -50,18 +51,21 @@ const apiIsLoaded = (map, maps, events) => {
   bindResizeListener(map, maps, bounds);
 };
 
-// Fit map to its bounds after the api on change
-const setBounds = (map, maps, events) => {
-  // Get bounds by our places
-  const bounds = getMapBounds(map, maps, events);
-  // Fit map to bounds
-  map.fitBounds(bounds);
-};
+// // Fit map to its bounds after the api on change
+// const setBounds = (map, maps, events) => {
+//   // Get bounds by our places
+//   const bounds = getMapBounds(map, maps, events);
+//   // Fit map to bounds
+//   map.fitBounds(bounds);
+// };
 
 class MainMap extends Component {
   constructor(props) {
     super(props)
     this.map = React.createRef()
+    this.state = {openMarker: null}
+    this._onChildClick=this._onChildClick.bind(this);
+    this.closeBalloon =this.closeBalloon.bind(this);
   }
 
   componentDidUpdate(prevProps) {
@@ -81,8 +85,19 @@ class MainMap extends Component {
     }
   }
 }
+  _onChildClick(key, childProps) {
+    const openMarker = this.state.openMarker
+    if (openMarker !== key) {
+      this.setState({openMarker: key})
+    }
+  }
+
+  closeBalloon() {
+    this.setState({openMarker: null})
+  }
 
   render() {
+    const { openMarker } = this.state;
     const { genres } = this.props;
     let showingEvents = []
     genres.forEach(genre => {
@@ -103,11 +118,33 @@ class MainMap extends Component {
             onGoogleApiLoaded={({ map, maps }) => apiIsLoaded(map, maps, showingEvents)}
             yesIWantToUseGoogleMapApiInternals
             ref={this.map}
+            onChildClick={this._onChildClick}
           >
             {showingEvents.map( ({node: event}) => {
-              return <Marker
+              const isOpen = (openMarker === event.slug)
+              if (isOpen) {
+                return (
+                  <Balloon
+              isOpen={isOpen}
               key={event.slug}
-              text={event.venue.name}
+              venue={event.venue.name}
+              eventTitle={event.title}
+              lat={event.venue.coords.lat}
+              lng={event.venue.coords.lng}
+              eventSlug={event.slug}
+              bg={genreColour(event.genre)}
+              genre={event.genre}>
+              <CloseBalloon onClick={this.closeBalloon}>
+                X
+              </CloseBalloon>
+              </Balloon>
+                  )
+              }
+              return <Marker
+              isOpen={isOpen}
+              key={event.slug}
+              venue={event.venue.name}
+              eventTitle={event.title}
               lat={event.venue.coords.lat}
               lng={event.venue.coords.lng}
               eventSlug={event.slug}
