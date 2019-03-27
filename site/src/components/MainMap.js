@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import isEmpty from 'lodash.isempty';
 
 // components:
 import Marker from '../components/Marker';
@@ -14,8 +13,28 @@ const Wrapper = styled.main`
   width: 100%;
   height: 500px;
   margin-bottom: 0;
+  position: relative;
 `;
 
+const InfoWindowDiv = styled.div`
+  width: 100%;
+  position: absolute;
+  bottom: 0;
+  padding: 20px 10px 30px;
+  height: auto;
+  background: lightgray;
+  z-index: 2;
+`
+
+const InfoWindow = (props) => {
+  return (
+    <InfoWindowDiv>
+      {props.children}
+      <h3>{props.eventTitle}</h3>
+      {props.venue}
+    </InfoWindowDiv>
+  )
+}
 
 const MELB_CENTER = [-37.8124, 144.9623];
 
@@ -71,6 +90,7 @@ class MainMap extends Component {
   componentDidUpdate(prevProps) {
   // Typical usage (don't forget to compare props):
   if (this.props.genres !== prevProps.genres) {
+    if ((this.props.genres.length > prevProps.genres.length) && this.props.genres.length > 1) {
     const bounds = new window.google.maps.LatLngBounds()
     this.props.genres.forEach(genre => {
       genre.edges.forEach(event => {
@@ -85,10 +105,12 @@ class MainMap extends Component {
     }
   }
 }
+}
   _onChildClick(key, childProps) {
-    const openMarker = this.state.openMarker
-    if (openMarker !== key) {
-      this.setState({openMarker: key})
+    const {openMarker} = this.state
+    if ((openMarker === null) || (openMarker.key !== key)) {
+      let openMarker = {key, eventTitle: childProps.eventTitle, venue: childProps.venue}
+      this.setState({openMarker})
     }
   }
 
@@ -108,7 +130,6 @@ class MainMap extends Component {
 
     return (
       <Wrapper>
-        {!isEmpty(genres) && (
           <GoogleMapReact
             defaultZoom={10}
             defaultCenter={MELB_CENTER}
@@ -121,7 +142,7 @@ class MainMap extends Component {
             onChildClick={this._onChildClick}
           >
             {showingEvents.map( ({node: event}) => {
-              const isOpen = (openMarker === event.slug)
+              const isOpen = (openMarker && (openMarker.key === event.slug))
               if (isOpen) {
                 return (
                   <Balloon
@@ -152,7 +173,13 @@ class MainMap extends Component {
           />
           })}
           </GoogleMapReact>
-        )}
+          {openMarker && (
+          <InfoWindow eventTitle={openMarker.eventTitle} venue={openMarker.venue}>
+            <CloseBalloon onClick={this.closeBalloon}>
+                X
+              </CloseBalloon>
+          </InfoWindow>
+          )}
       </Wrapper>
     );
   }

@@ -9,6 +9,7 @@ import { space } from 'styled-system'
 import GenreEventsList from '../components/GenreEventsList'
 import DayNav from '../components/DayNav'
 import moment from 'moment-timezone'
+import Header from '../components/header'
 
 function sortById(a,b) {
   if (a.fieldValue < b.fieldValue)
@@ -92,13 +93,14 @@ class DayPage extends React.Component {
   if (showingGenres) {
     showingGenres.sort(sortById)
   }
-  const {nextDate, date, prevDate} = pageContext
+  const {date} = pageContext
   // const events = data.allEvents.edges;
   // const MELB_CENTER = [-37.8124, 144.9623];
   return (
   <Layout>
+    <Header title={moment(date).format('dddd DD MMMM')}></Header>
     <SEO title={moment(date).format('dddd DD MMMM')} keywords={[`music`, `melbourne`]} />
-    <DayNav prevDate={prevDate} date={date} nextDate={nextDate} />
+    <DayNav current={date} />
     <div style={{width: '100%', height: 'auto', marginBottom: '0.5em'}}>
     <MainMap genres={showingGenres} />
     </div>

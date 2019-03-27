@@ -2,54 +2,56 @@ import styled from 'styled-components'
 import moment from 'moment-timezone'
 import React from 'react'
 import { Link, useStaticQuery, graphql } from 'gatsby'
-import { MdKeyboardArrowLeft, MdKeyboardArrowRight } from 'react-icons/md'
 
 
 const FlexContainer = styled.div`
 display: flex;
 justify-content: space-between;
-margin-bottom: 1em;
+margin-bottom: 0.25em;
 `
 
 const FlexItem = styled.div`
 width: auto;
+
+a {
+	background: ${props => props.isCurrent ? 'gold' : 'lightgray' };
+}
 `
 
-const PrevDate = styled(FlexItem)`
-text-align: left;
-`
+// const PrevDate = styled(FlexItem)`
+// text-align: left;
+// `
 
-const CurrentDate = styled(FlexItem)`
-text-align: center;
-font-weight: bold;
-`
+// const CurrentDate = styled(FlexItem)`
+// text-align: center;
+// font-weight: bold;
+// `
 
-const NextDate = styled(FlexItem)`
-text-align: right;
-`
+// const NextDate = styled(FlexItem)`
+// text-align: right;
+// `
 
 const DateLink = styled(Link)`
-background: lightgray;
-padding: 0.5em 1em;
+padding: 0.25em 0.5em;
 color: black;
 text-decoration: none;
 `
 
-const arrowStyle = `
-width: 1em;
-height: 1em;
-position: relative;
-top: 0.125em;
-`
+// const arrowStyle = `
+// width: 1em;
+// height: 1em;
+// position: relative;
+// top: 0.125em;
+// `
 
-const RightArrow = styled(MdKeyboardArrowRight)`${arrowStyle}`
+// const RightArrow = styled(MdKeyboardArrowRight)`${arrowStyle}`
 
-const LeftArrow = styled(MdKeyboardArrowLeft)`${arrowStyle}`
+// const LeftArrow = styled(MdKeyboardArrowLeft)`${arrowStyle}`
 
 
-function dStr(date) {
-	return moment(date).format('dddd DD MMMM')
-}
+// function dStr(date) {
+// 	return moment(date).format('dddd DD MMMM')
+// }
 
 function dayStr(date) {
 	return moment(date).format('ddd')
@@ -63,9 +65,9 @@ function dPath(date, today) {
 	}
 }
 
-function DayNav({prevDate, date, nextDate}) {
-  const {dates} = useStaticQuery(graphql`
-    query getToday {
+function DayNav({current}) {
+  const dateQuery = useStaticQuery(graphql`
+	{
       dates: allEventsJson {
 	    group(field: date) {
 	      fieldValue
@@ -73,18 +75,16 @@ function DayNav({prevDate, date, nextDate}) {
 	  }
     }
   `)
-  const today = dates.group[0].fieldValue
+  const today = dateQuery.dates.group[0].fieldValue
+  const dates = dateQuery.dates.group
+
   return (
   	<FlexContainer>
-	    <PrevDate>
-	    {prevDate && (<DateLink to={dPath(prevDate, today)}><LeftArrow />{dayStr(prevDate)}</DateLink>)}
-	    </PrevDate>
-	    <CurrentDate>
-	    {dStr(date)}
-	    </CurrentDate>
-	    <NextDate>
-	    {nextDate && (<DateLink to={dPath(nextDate)}>{dayStr(nextDate)}<RightArrow /></DateLink>)}
-	    </NextDate>
+		{dates.map(({fieldValue: date}) => {
+			return <FlexItem key={dPath(date, today)} isCurrent={(date === current)}>
+				<DateLink to={dPath(date, today)}>{dayStr(date)}</DateLink>
+			</FlexItem>
+		})}
     </FlexContainer>
   );
 }
