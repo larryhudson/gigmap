@@ -10,10 +10,12 @@ import GoogleMapReact from 'google-map-react';
 import styled from 'styled-components';
 
 const Wrapper = styled.main`
+  display: ${props => props.showing ? 'block' : 'none'};
   width: 100%;
-  height: 500px;
+  height: 90vh;
   margin-bottom: 0;
   position: relative;
+  overflow-y: hidden;
 `;
 
 const InfoWindowDiv = styled.div`
@@ -129,7 +131,7 @@ class MainMap extends Component {
     })
 
     return (
-      <Wrapper>
+      <Wrapper showing={this.props.showing}>
           <GoogleMapReact
             defaultZoom={10}
             defaultCenter={MELB_CENTER}
@@ -176,8 +178,8 @@ class MainMap extends Component {
           {openMarker && (
           <InfoWindow eventTitle={openMarker.eventTitle} venue={openMarker.venue}>
             <CloseBalloon onClick={this.closeBalloon}>
-                X
-              </CloseBalloon>
+              X
+            </CloseBalloon>
           </InfoWindow>
           )}
       </Wrapper>
