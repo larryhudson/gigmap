@@ -48,6 +48,7 @@ const EventVenue = styled.span`
 
 const GenreHeading = styled.h3`
 background: ${props => props.bg ? props.bg : 'lightgray'};
+margin-bottom: 10px;
 ${space}
 `
 
@@ -57,7 +58,7 @@ class GenreEventsList extends React.Component {
 
 	  const {genres, date} = this.props
 	  return (
-	  	<div>
+	  	<div style={{marginTop: "10px", overflowY: "auto"}}>
 	      {genres.map( genre => (
 	      <div key={'genre-events-' + date + genre.fieldValue}>
 	      <GenreHeading p={['2','3']} id={genre.fieldValue} bg={genreColour(genre.fieldValue, 0.25)}>{getGenreName(genre.fieldValue)} ({genre.totalCount})</GenreHeading>

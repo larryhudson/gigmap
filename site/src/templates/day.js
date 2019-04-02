@@ -22,7 +22,7 @@ function sortById(a, b) {
 
 const MyContainer = styled.div`
 display: flex;
-flex-flow: column;
+flex-direction: column;
 height: 100%;
 `
 
@@ -36,6 +36,8 @@ flex: 0 1 auto;
 
 const Main = styled.div`
 flex: 1 1 auto;
+display: flex;
+flex-direction: column;
 `
 
 const Foot = styled.div`
@@ -65,7 +67,20 @@ background: white;
 z-index: 2;
 `
 
+// resetting styles
 const OptionButton = styled.button`
+border: none;
+margin: 0;
+padding: 0;
+width: auto;
+overflow: visible;
+background: transparent;
+color: inherit;
+font: inherit;
+line-height: normal;
+-webkit-font-smoothing: inherit;
+-moz-osx-font-smoothing: inherit;
+-webkit-appearance: none;
 outline: 1px solid black;
 padding: 5px 10px;
 &:active {

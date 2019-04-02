@@ -126,7 +126,9 @@ class MainMap extends Component {
     let showingEvents = []
     genres.forEach(genre => {
       genre.edges.forEach(event => {
-        showingEvents.push(event)
+        if (event.node.venue.coords !== null) {
+          showingEvents.push(event)
+        }
       })
     })
 
