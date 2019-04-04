@@ -177,13 +177,6 @@ class MainMap extends Component {
           />
           })}
           </GoogleMapReact>
-          {openMarker && (
-          <InfoWindow eventTitle={openMarker.eventTitle} venue={openMarker.venue}>
-            <CloseBalloon onClick={this.closeBalloon}>
-              X
-            </CloseBalloon>
-          </InfoWindow>
-          )}
       </Wrapper>
     );
   }
