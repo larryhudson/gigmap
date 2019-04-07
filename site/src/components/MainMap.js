@@ -18,26 +18,6 @@ const Wrapper = styled.main`
   overflow-y: hidden;
 `;
 
-const InfoWindowDiv = styled.div`
-  width: 100%;
-  position: absolute;
-  bottom: 0;
-  padding: 20px 10px 30px;
-  height: auto;
-  background: lightgray;
-  z-index: 2;
-`
-
-const InfoWindow = (props) => {
-  return (
-    <InfoWindowDiv>
-      {props.children}
-      <h3>{props.eventTitle}</h3>
-      {props.venue}
-    </InfoWindowDiv>
-  )
-}
-
 const MELB_CENTER = [-37.8124, 144.9623];
 
 // Return map bounds based on list of places
@@ -90,8 +70,7 @@ class MainMap extends Component {
   }
 
   componentDidUpdate(prevProps) {
-  // Typical usage (don't forget to compare props):
-  if (this.props.genres !== prevProps.genres) {
+    if (this.props.genres !== prevProps.genres) {
     if ((this.props.genres.length > prevProps.genres.length) && this.props.genres.length > 1) {
     const bounds = new window.google.maps.LatLngBounds()
     this.props.genres.forEach(genre => {

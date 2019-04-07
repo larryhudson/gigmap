@@ -28,6 +28,10 @@ const genres = [
 'colour': 'white'}
 ]
 
+export function getAllGenreIds() {
+	return genres.map(genre => genre.id).sort()
+}
+
 export function getGenreName(id) {
 	const genre = genres.find(g => g.id === id)
 	return genre.name

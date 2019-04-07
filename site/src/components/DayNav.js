@@ -65,7 +65,7 @@ function dPath(date, today) {
 	}
 }
 
-function DayNav({current}) {
+function DayNav({showingGenreIds, current}) {
   const dateQuery = useStaticQuery(graphql`
 	{
       dates: allEventsJson {
@@ -82,7 +82,7 @@ function DayNav({current}) {
   	<FlexContainer>
 		{dates.map(({fieldValue: date}) => {
 			return <FlexItem key={dPath(date, today)} isCurrent={(date === current)}>
-				<DateLink to={dPath(date, today)}>{dayStr(date)}</DateLink>
+				<DateLink to={dPath(date, today) } state={{showingGenreIds}}>{dayStr(date)}</DateLink>
 			</FlexItem>
 		})}
     </FlexContainer>
