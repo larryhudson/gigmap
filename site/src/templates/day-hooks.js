@@ -55,7 +55,7 @@ function sortById(a, b) {
   return 0;
 }
 
-export default ({ location, data, pageContext }) => {
+export default ({ data, pageContext }) => {
   let initialGenres, initialView;
 
   try {
@@ -130,7 +130,7 @@ export default ({ location, data, pageContext }) => {
         title={moment(date).format("dddd DD MMMM")}
         keywords={[`music`, `melbourne`]}
       />
-      <DayNav current={date} showingGenreIds={showingGenreIds} />
+      <DayNav current={date} />
       {showingMap && <MainMap genres={showingGenres} showing={showingMap} />}
       {showingList && <GenreEventsList genres={showingGenres} date={date} />}
       <BottomButtons

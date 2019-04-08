@@ -82,7 +82,7 @@ function DayNav({showingGenreIds, current}) {
   	<FlexContainer>
 		{dates.map(({fieldValue: date}) => {
 			return <FlexItem key={dPath(date, today)} isCurrent={(date === current)}>
-				<DateLink to={dPath(date, today) } state={{showingGenreIds}}>{dayStr(date)}</DateLink>
+				<DateLink to={dPath(date, today) }>{dayStr(date)}</DateLink>
 			</FlexItem>
 		})}
     </FlexContainer>
