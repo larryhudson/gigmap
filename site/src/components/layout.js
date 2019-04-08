@@ -23,7 +23,6 @@ const Layout = ({ children }) => (
             maxWidth: 960,
             padding: `0px 0px 1.45rem`,
             paddingTop: 0,
-            overflowY: 'hidden',
             height: '100vh'
           }}
         >

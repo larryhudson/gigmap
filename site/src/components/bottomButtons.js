@@ -9,6 +9,8 @@ const BottomButtonsDiv = styled.div`
   background: white;
   width: 100%;
   padding: 5px;
+  max-width: 960px;
+  margin: 0 auto;
 `;
 
 // resetting styles
@@ -26,7 +28,7 @@ const OptionButton = styled.button`
   -moz-osx-font-smoothing: inherit;
   -webkit-appearance: none;
   outline: 1px solid black;
-  padding: 5px 10px;
+  padding: 15px 15px;
   &:active {
     background: lightgray;
   }

@@ -8,15 +8,13 @@ const OptionsWindowDiv = styled.div`
   width: 100%;
   position: fixed;
   bottom: 0;
+  margin: 0 auto;
+  max-width: 960px;
   padding: 20px 10px 30px;
   height: auto;
   background: white;
   z-index: 2;
 `;
-
-const OptionsWindow = ({ children }) => {
-  return <OptionsWindowDiv>{children}</OptionsWindowDiv>;
-};
 
 const CheckboxList = styled.div`
   display: flex;
@@ -53,7 +51,7 @@ export default (props) => {
       props.onToggleFilters()
   }
   return (
-    <OptionsWindow>
+    <OptionsWindowDiv>
       <CloseBalloon onClick={toggleFilters}>X</CloseBalloon>
       <h3 style={{ marginBottom: "0.5em" }}>Filter by genre</h3>
       <CheckboxList>
@@ -80,6 +78,6 @@ export default (props) => {
           );
         })}
       </CheckboxList>
-    </OptionsWindow>
+    </OptionsWindowDiv>
   );
 }

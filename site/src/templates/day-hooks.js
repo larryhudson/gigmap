@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { graphql } from "gatsby";
 import Layout from "../components/layout";
 import SEO from "../components/seo";
@@ -9,7 +9,7 @@ import GenreEventsList from "../components/GenreEventsList";
 import DayNav from "../components/DayNav";
 import moment from "moment-timezone";
 import Header from "../components/header";
-import {getAllGenreIds} from "../consts/genres";
+import { getAllGenreIds } from "../consts/genres";
 // import { Machine, assign } from "xstate";
 // import { useMachine } from "@xstate/react";
 
@@ -56,13 +56,33 @@ function sortById(a, b) {
 }
 
 export default ({ location, data, pageContext }) => {
-  let initialGenreIds = location.state.showingGenreIds ? location.state.showingGenreIds : getAllGenreIds();
-  
-  const [showingGenreIds, setShowingGenreIds] = useState(
-    initialGenreIds
-  );
+  let initialGenres, initialView;
+
+  try {
+    initialGenres = JSON.parse(sessionStorage.getItem("showingGenreIds"));
+  } catch {
+    initialGenres = getAllGenreIds();
+  }
+
+  const [showingGenreIds, setShowingGenreIds] = useState(initialGenres);
+
+  useEffect(() => {
+    sessionStorage.setItem("showingGenreIds", JSON.stringify(showingGenreIds));
+  }, [showingGenreIds]);
+
+  try {
+    initialView = sessionStorage.getItem("currentView");
+  } catch {
+    initialView = "map";
+  }
+
+  const [view, setView] = useState(initialView);
+
+  useEffect(() => {
+    sessionStorage.setItem("currentView", view);
+  }, [view]);
+
   const [showingFilters, setShowingFilters] = useState(null);
-  const [view, setView] = useState("map");
 
   function handleGenreChange(e) {
     const thisGenreId = e.target.name;
@@ -100,7 +120,9 @@ export default ({ location, data, pageContext }) => {
   const { date } = pageContext;
   const showingMap = view === "map";
   const showingList = view === "list";
-  const showingGenres = allGenres.filter(genre => showingGenreIds.includes(genre.fieldValue))
+  const showingGenres = allGenres.filter(genre =>
+    showingGenreIds.includes(genre.fieldValue)
+  );
   return (
     <Layout>
       <Header title={moment(date).format("dddd DD MMMM")} />
@@ -109,7 +131,7 @@ export default ({ location, data, pageContext }) => {
         keywords={[`music`, `melbourne`]}
       />
       <DayNav current={date} showingGenreIds={showingGenreIds} />
-      <MainMap genres={showingGenres} showing={showingMap} />
+      {showingMap && <MainMap genres={showingGenres} showing={showingMap} />}
       {showingList && <GenreEventsList genres={showingGenres} date={date} />}
       <BottomButtons
         onToggleFilters={toggleFilters}
