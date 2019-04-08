@@ -58,7 +58,7 @@ function sortById(a, b) {
 export default ({ data, pageContext }) => {
   let initialGenres, initialView;
 
-  if (sessionStorage) {
+  if (typeof sessionStorage !== 'undefined') {
     if (sessionStorage.getItem("showingGenreIds")) {
       initialGenres = JSON.parse(sessionStorage.getItem("showingGenreIds"));
     } else {
@@ -74,7 +74,7 @@ export default ({ data, pageContext }) => {
     sessionStorage.setItem("showingGenreIds", JSON.stringify(showingGenreIds));
   }, [showingGenreIds]);
 
-  if (sessionStorage) {
+  if (typeof sessionStorage !== 'undefined') {
     // see if view is in session storage.
     if (sessionStorage.getItem("currentView")) {
       // use view from session storage.
