@@ -8,8 +8,8 @@ async function parseEventPages(events) {
 	return Promise.all(
 		eventsMap = events.map(
 			async event => await parseEventPage(event)
-			)
 		)
+	)
 }
 
 async function parseEventPage(event) {
@@ -21,47 +21,66 @@ async function parseEventPage(event) {
 
 	return rp(eventOptions).then(async ($) => {
 		// need to get: start time, artists and supports, ticket / info link.
-		const startTime = $('.gigguide_node-summary-detail .date-display-single').eq(0).text().split(' @ ')[1];
-		// artists:
-		const mainArtistTag = $('.artist .gigguide_node-summary-detail a').eq(0)
-		const mainArtist = {name: mainArtistTag.text(),
-							slug: mainArtistTag.attr('href').replace('/category/gig-artist/', '')}
-
-		// support artists: 
-		const supportLabel = $('h5.label-inline.gigguide_gigdetail-field-label:contains("Supports:")').eq(0)
-		const afterSupports = $('h5.label-inline.gigguide_gigdetail-field-label')
-
-		const supportTags = supportLabel.nextUntil(afterSupports)
-		let supports = undefined;
-		const supportsMap = supportTags.map((index, tag) => {
-			const aTag = $(tag).find('a')
-			const name = aTag.text()
-			const slug = aTag.attr('href').replace('/category/gig-support/', '')
-			return {name, slug}
-		}).get()
-
-		if (supportsMap.length > 0) {
-			supports = supportsMap
-		}
-
-		// info link:
-		const infoLinkTag = $('.gigguide_node-summary-detail.buy-tickets-button a').eq(0)
-		const infoLink = {text: infoLinkTag.text(),
-						  href: infoLinkTag.attr('href')}
-		const scraped = true
-		return {
-			...event,
-			startTime,
-			mainArtist,
-			supports,
-			infoLink,
-			scraped,
+		try {
+			const startTime = $('.gigguide_node-summary-detail .date-display-single').eq(0).text().split(' @ ')[1];
+			// artists:
+			const mainArtistTag = $('.artist .gigguide_node-summary-detail a').eq(0)
+			const mainArtist = {
+				name: mainArtistTag.text(),
+				slug: mainArtistTag.attr('href').replace('/category/gig-artist/', '')
 			}
-		})
-	   .catch(function (err) {
-	    // API call failed...
-	    	console.log(err)
-	        return event;
+
+			// support artists: 
+			const supportLabel = $('h5.label-inline.gigguide_gigdetail-field-label:contains("Supports:")').eq(0)
+			const afterSupports = $('h5.label-inline.gigguide_gigdetail-field-label')
+
+			const supportTags = supportLabel.nextUntil(afterSupports)
+			let supports = undefined;
+			const supportsMap = supportTags.map((index, tag) => {
+				const aTag = $(tag).find('a')
+				const name = aTag.text()
+				const slug = aTag.attr('href').replace('/category/gig-support/', '')
+				return { name, slug }
+			}).get()
+
+			if (supportsMap.length > 0) {
+				supports = supportsMap
+			}
+
+			// info link:
+			const infoLinkTag = $('.gigguide_node-summary-detail.buy-tickets-button a').eq(0)
+			const infoLink = {
+				text: infoLinkTag.text(),
+				href: infoLinkTag.attr('href')
+			}
+			const scraped = true
+
+			return {
+				...event,
+				startTime,
+				mainArtist,
+				supports,
+				infoLink,
+				scraped,
+			}
+		}
+		catch (err) {
+			// if there's a cheerio error, we just return the event with scraped = true so
+			// it doesn't get scraped again. bit of a cop out but better than trying over
+			// and over again.
+			return {
+				...event,
+				scraped: true
+			}
+		}
+	})
+		.catch(function (err) {
+			// API call failed...
+			console.log(err)
+			return {
+				...event,
+				scraped: true
+			}
 		});
 }
 
@@ -98,10 +117,10 @@ async function getEvents(date) {
 	const dateURL = 'http://www.beat.com.au/gig-guide/' + dateString;
 
 	let events = [];
-	
-	return rp(rpOptions(dateURL)).then(function($) {
+
+	return rp(rpOptions(dateURL)).then(function ($) {
 		const eventDivs = $('.archive_node-summary-wrapper');
-		eventDivs.each(function(i, event) {
+		eventDivs.each(function (i, event) {
 			events[i] = parseEvent($, event)
 		})
 		return events
@@ -112,11 +131,11 @@ async function dayEvents(dates) {
 	return Promise.all(
 		dates.map(
 			async date => await getEvents(date)
-			)
-		).then(arraysOfEvents => {
-	// flatten array of arrays into one array of events.
-	return arraysOfEvents.reduce((acc, val) => acc.concat(val))
-})
+		)
+	).then(arraysOfEvents => {
+		// flatten array of arrays into one array of events.
+		return arraysOfEvents.reduce((acc, val) => acc.concat(val))
+	})
 }
 
-module.exports = {dayEvents, parseEventPages, parseEventPage}
+module.exports = { dayEvents, parseEventPages, parseEventPage }

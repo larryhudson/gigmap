@@ -58,9 +58,9 @@ function sortById(a, b) {
 export default ({ data, pageContext }) => {
   let initialGenres, initialView;
 
-  try {
+  if ((sessionStorage) && (sessionStorage.getItem("showingGenreIds"))) {
     initialGenres = JSON.parse(sessionStorage.getItem("showingGenreIds"));
-  } catch {
+  } else {
     initialGenres = getAllGenreIds();
   }
 
@@ -70,9 +70,9 @@ export default ({ data, pageContext }) => {
     sessionStorage.setItem("showingGenreIds", JSON.stringify(showingGenreIds));
   }, [showingGenreIds]);
 
-  try {
+  if ((sessionStorage) && (sessionStorage.getItem("currentView"))) {
     initialView = sessionStorage.getItem("currentView");
-  } catch {
+  } else {
     initialView = "map";
   }
 

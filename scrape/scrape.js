@@ -73,7 +73,7 @@ async function main2() {
 	// get info for first 25
 	const unscrapedEvents = events.filter(event => !(event.scraped))
 	console.log(unscrapedEvents.length + " events to scrape")
-	const eventsToScrape = unscrapedEvents.slice(0,25)
+	const eventsToScrape = unscrapedEvents.slice(0,50)
 	const scrapedEvents = await parseEventPages(eventsToScrape)
 
 	// overwrite old event in array
@@ -112,20 +112,6 @@ async function main2() {
 }
 
 main2()
-// Get dates for the next 7 days. Same as before.
-
-// Load in existing events file. Delete events with dates not in our dates range.
-// Get new events for next 7 days. If not in existing events file, concatenate.
-// Get first 25 events (sorted by date) that have a 'scraped' attribute = False.
-// For those 25 events, scrape their event pages and add data to the events file.
-// 
-// 
-// 
-// 
-// 
-// 
-// 
-// 
 
 
 // MAIN FUNCTION - GET EVENTS FOR DAYS, GET NEW VENUES AND SAVE BOTH.
