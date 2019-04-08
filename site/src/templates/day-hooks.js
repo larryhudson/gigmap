@@ -58,8 +58,12 @@ function sortById(a, b) {
 export default ({ data, pageContext }) => {
   let initialGenres, initialView;
 
-  if ((sessionStorage) && (sessionStorage.getItem("showingGenreIds"))) {
-    initialGenres = JSON.parse(sessionStorage.getItem("showingGenreIds"));
+  if (sessionStorage) {
+    if (sessionStorage.getItem("showingGenreIds")) {
+      initialGenres = JSON.parse(sessionStorage.getItem("showingGenreIds"));
+    } else {
+      initialGenres = getAllGenreIds();
+    }
   } else {
     initialGenres = getAllGenreIds();
   }
@@ -70,9 +74,17 @@ export default ({ data, pageContext }) => {
     sessionStorage.setItem("showingGenreIds", JSON.stringify(showingGenreIds));
   }, [showingGenreIds]);
 
-  if ((sessionStorage) && (sessionStorage.getItem("currentView"))) {
-    initialView = sessionStorage.getItem("currentView");
+  if (sessionStorage) {
+    // see if view is in session storage.
+    if (sessionStorage.getItem("currentView")) {
+      // use view from session storage.
+      initialView = sessionStorage.getItem("currentView");
+    } else {
+      // view is not in session storage. use default.
+      initialView = "map";
+    }
   } else {
+    // session storage not available. use default.
     initialView = "map";
   }
 
