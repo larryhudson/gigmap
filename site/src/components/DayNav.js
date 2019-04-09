@@ -11,47 +11,23 @@ margin-bottom: 0.25em;
 `
 
 const FlexItem = styled.div`
-width: auto;
+width: 90%;
+margin: 0;
 
 a {
-	background: ${props => props.isCurrent ? 'gold' : 'lightgray' };
+	background: ${props => props.isCurrent ? 'gold' : 'white' };
 }
 `
-
-// const PrevDate = styled(FlexItem)`
-// text-align: left;
-// `
-
-// const CurrentDate = styled(FlexItem)`
-// text-align: center;
-// font-weight: bold;
-// `
-
-// const NextDate = styled(FlexItem)`
-// text-align: right;
-// `
 
 const DateLink = styled(Link)`
 padding: 0.25em 0.5em;
 color: black;
 text-decoration: none;
+width: 100%;
+display: block;
+text-align: center;
+border: 1px solid black;
 `
-
-// const arrowStyle = `
-// width: 1em;
-// height: 1em;
-// position: relative;
-// top: 0.125em;
-// `
-
-// const RightArrow = styled(MdKeyboardArrowRight)`${arrowStyle}`
-
-// const LeftArrow = styled(MdKeyboardArrowLeft)`${arrowStyle}`
-
-
-// function dStr(date) {
-// 	return moment(date).format('dddd DD MMMM')
-// }
 
 function dayStr(date) {
 	return moment(date).format('ddd')
@@ -65,7 +41,7 @@ function dPath(date, today) {
 	}
 }
 
-function DayNav({showingGenreIds, current}) {
+function DayNav({current}) {
   const dateQuery = useStaticQuery(graphql`
 	{
       dates: allEventsJson {

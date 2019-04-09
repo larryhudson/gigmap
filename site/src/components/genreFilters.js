@@ -3,6 +3,7 @@ import styled from "styled-components";
 import { getGenreName, genreColour } from "../consts/genres";
 import { CloseBalloon } from "./Balloon";
 import { space } from "styled-system";
+import { UnstyledButton } from "./bottomButtons"
 
 const OptionsWindowDiv = styled.div`
   width: 100%;
@@ -28,6 +29,7 @@ const CheckboxContainer = styled.div`
   flex-basis: calc(50% - 5px);
   margin-bottom: 10px;
   padding-top: 10px;
+  border: 1px solid lightgray;
 
   input {
     margin-top: 0.75em;
@@ -42,7 +44,7 @@ const CheckboxContainer = styled.div`
 `;
 
 export default (props) => {
-  const { allGenres, showingGenres } = props;
+  const { allGenreIds, showingGenreIds } = props;
   function handleGenreChange(e) {
       props.onGenreChange(e)
   }
@@ -50,19 +52,25 @@ export default (props) => {
   function toggleFilters() {
       props.onToggleFilters()
   }
+
+  function selectAllGenres() {
+    props.onSelectAll()
+  }
   return (
     <OptionsWindowDiv>
-      <CloseBalloon onClick={toggleFilters}>X</CloseBalloon>
-      <h3 style={{ marginBottom: "0.5em" }}>Filter by genre</h3>
+      <div style={{display: "flex", justifyContent: "space-between", margin: "10px 0" }}>
+      <h3 style={{ margin: "auto 0" }}>Filter by category</h3>
+      <UnstyledButton onClick={selectAllGenres} style={{margin: "auto 0"}}>Select all</UnstyledButton>
+      <UnstyledButton onClick={toggleFilters}>X</UnstyledButton>
+      </div>
       <CheckboxList>
-        {allGenres.map(genre => {
-          let genreId = genre.fieldValue;
-          let isShowing = showingGenres ? showingGenres.includes(genre) : true;
+        {allGenreIds.map(genreId => {
+          let isShowing = showingGenreIds ? showingGenreIds.includes(genreId) : true;
           return (
             <CheckboxContainer
               key={"checkbox-" + genreId}
               ticked={isShowing}
-              genreColour={genreColour(genre.fieldValue, 0.25)}
+              genreColour={genreColour(genreId, 0.25)}
               p={["1", "2"]}
             >
               <label>

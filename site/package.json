@@ -28,6 +28,7 @@
     "palx": "^1.0.3",
     "prop-types": "^15.7.2",
     "react": "^16.8.2",
+    "react-anchor-link-smooth-scroll": "^1.0.12",
     "react-dom": "^16.8.2",
     "react-geocode": "^0.1.2",
     "react-helmet": "^5.2.0",

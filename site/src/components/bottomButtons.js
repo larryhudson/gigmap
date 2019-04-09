@@ -14,13 +14,14 @@ const BottomButtonsDiv = styled.div`
 `;
 
 // resetting styles
-const OptionButton = styled.button`
+export const UnstyledButton = styled.button`
   border: none;
   margin: 0;
   padding: 0;
   width: auto;
   overflow: visible;
   background: transparent;
+  cursor: pointer;
   color: inherit;
   font: inherit;
   line-height: normal;
@@ -44,8 +45,8 @@ export default props => {
   }
   return (
     <BottomButtonsDiv>
-      <OptionButton onClick={toggleFilters}>Filter by genre</OptionButton>
-      <OptionButton onClick={changeView}>Change view</OptionButton>
+      <UnstyledButton onClick={toggleFilters}>Filter by category</UnstyledButton>
+      <UnstyledButton onClick={changeView}>Change view</UnstyledButton>
     </BottomButtonsDiv>
   );
 };

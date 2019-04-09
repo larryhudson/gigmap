@@ -58,12 +58,8 @@ function sortById(a, b) {
 export default ({ data, pageContext }) => {
   let initialGenres, initialView;
 
-  if (typeof sessionStorage !== 'undefined') {
-    if (sessionStorage.getItem("showingGenreIds")) {
-      initialGenres = JSON.parse(sessionStorage.getItem("showingGenreIds"));
-    } else {
-      initialGenres = getAllGenreIds();
-    }
+  if ((typeof sessionStorage !== 'undefined') && (sessionStorage.getItem("showingGenreIds"))) {
+    initialGenres = JSON.parse(sessionStorage.getItem("showingGenreIds"));
   } else {
     initialGenres = getAllGenreIds();
   }
@@ -74,17 +70,9 @@ export default ({ data, pageContext }) => {
     sessionStorage.setItem("showingGenreIds", JSON.stringify(showingGenreIds));
   }, [showingGenreIds]);
 
-  if (typeof sessionStorage !== 'undefined') {
-    // see if view is in session storage.
-    if (sessionStorage.getItem("currentView")) {
-      // use view from session storage.
-      initialView = sessionStorage.getItem("currentView");
-    } else {
-      // view is not in session storage. use default.
-      initialView = "map";
-    }
+  if ((typeof sessionStorage !== 'undefined') && (sessionStorage.getItem("currentView"))) {
+    initialView = sessionStorage.getItem("currentView");
   } else {
-    // session storage not available. use default.
     initialView = "map";
   }
 
@@ -112,6 +100,10 @@ export default ({ data, pageContext }) => {
     }
   }
 
+  function selectAllGenres() {
+    setShowingGenreIds(getAllGenreIds())
+  }
+
   function toggleFilters() {
     if (showingFilters === null) {
       setShowingFilters(true);
@@ -128,11 +120,12 @@ export default ({ data, pageContext }) => {
     }
   }
 
-  const allGenres = data.eventsByGenre.group;
+  const todayGenres = data.eventsByGenre.group;
+  const allGenreIds = getAllGenreIds()
   const { date } = pageContext;
   const showingMap = view === "map";
   const showingList = view === "list";
-  const showingGenres = allGenres.filter(genre =>
+  const showingGenres = todayGenres.filter(genre =>
     showingGenreIds.includes(genre.fieldValue)
   );
   return (
@@ -143,7 +136,7 @@ export default ({ data, pageContext }) => {
         keywords={[`music`, `melbourne`]}
       />
       <DayNav current={date} />
-      {showingMap && <MainMap genres={showingGenres} showing={showingMap} />}
+      {showingMap && <MainMap genres={showingGenres} />}
       {showingList && <GenreEventsList genres={showingGenres} date={date} />}
       <BottomButtons
         onToggleFilters={toggleFilters}
@@ -151,10 +144,11 @@ export default ({ data, pageContext }) => {
       />
       {showingFilters && (
         <GenreFilters
-          allGenres={allGenres}
-          showingGenres={showingGenres}
+          allGenreIds={allGenreIds}
+          showingGenreIds={showingGenreIds}
           onGenreChange={handleGenreChange}
           onToggleFilters={toggleFilters}
+          onSelectAll={selectAllGenres}
         />
       )}
     </Layout>
