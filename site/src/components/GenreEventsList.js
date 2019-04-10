@@ -109,7 +109,7 @@ class GenreEventsList extends React.Component {
 	  	<div style={{marginTop: "10px"}}>
 				{genres.length > 1 && (
 				<div>
-			  <GenreHeading p={['2','3']} id={'jump-to-genre' + date}>Jump to genre</GenreHeading>
+			  <GenreHeading p={['2','3']} id={'jump-to-genre' + date}>Jump to category</GenreHeading>
 				<CardList>
 				{genres.map( genre => (
 					<JumpCard
