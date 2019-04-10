@@ -1,9 +1,8 @@
 import React from "react";
 import styled from "styled-components";
 import { getGenreName, genreColour } from "../consts/genres";
-import { CloseBalloon } from "./Balloon";
 import { space } from "styled-system";
-import { UnstyledButton } from "./bottomButtons"
+import { UnstyledButton } from "./bottomButtons";
 
 const OptionsWindowDiv = styled.div`
   width: 100%;
@@ -43,29 +42,39 @@ const CheckboxContainer = styled.div`
   ${space}
 `;
 
-export default (props) => {
+export default props => {
   const { allGenreIds, showingGenreIds } = props;
   function handleGenreChange(e) {
-      props.onGenreChange(e)
+    props.onGenreChange(e);
   }
 
   function toggleFilters() {
-      props.onToggleFilters()
+    props.onToggleFilters();
   }
 
   function selectAllGenres() {
-    props.onSelectAll()
+    props.onSelectAll();
   }
   return (
     <OptionsWindowDiv>
-      <div style={{display: "flex", justifyContent: "space-between", margin: "10px 0" }}>
-      <h3 style={{ margin: "auto 0" }}>Filter by category</h3>
-      <UnstyledButton onClick={selectAllGenres} style={{margin: "auto 0"}}>Select all</UnstyledButton>
-      <UnstyledButton onClick={toggleFilters}>X</UnstyledButton>
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "space-between",
+          marginBottom: "1.25em"
+        }}
+      >
+        <h3 style={{ margin: "auto 0" }}>Filter by category</h3>
+        <UnstyledButton onClick={selectAllGenres} style={{ margin: "auto 0" }}>
+          Select all
+        </UnstyledButton>
+        <UnstyledButton onClick={toggleFilters}>X</UnstyledButton>
       </div>
       <CheckboxList>
         {allGenreIds.map(genreId => {
-          let isShowing = showingGenreIds ? showingGenreIds.includes(genreId) : true;
+          let isShowing = showingGenreIds
+            ? showingGenreIds.includes(genreId)
+            : true;
           return (
             <CheckboxContainer
               key={"checkbox-" + genreId}
@@ -88,4 +97,4 @@ export default (props) => {
       </CheckboxList>
     </OptionsWindowDiv>
   );
-}
+};

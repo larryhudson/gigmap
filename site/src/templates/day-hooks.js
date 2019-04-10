@@ -49,16 +49,19 @@ import { getAllGenreIds } from "../consts/genres";
 //   }
 // });
 
-function sortById(a, b) {
-  if (a.fieldValue < b.fieldValue) return -1;
-  if (a.fieldValue > b.fieldValue) return 1;
-  return 0;
-}
+// function sortById(a, b) {
+//   if (a.fieldValue < b.fieldValue) return -1;
+//   if (a.fieldValue > b.fieldValue) return 1;
+//   return 0;
+// }
 
 export default ({ data, pageContext }) => {
   let initialGenres, initialView;
 
-  if ((typeof sessionStorage !== 'undefined') && (sessionStorage.getItem("showingGenreIds"))) {
+  if (
+    typeof sessionStorage !== "undefined" &&
+    sessionStorage.getItem("showingGenreIds")
+  ) {
     initialGenres = JSON.parse(sessionStorage.getItem("showingGenreIds"));
   } else {
     initialGenres = getAllGenreIds();
@@ -70,7 +73,10 @@ export default ({ data, pageContext }) => {
     sessionStorage.setItem("showingGenreIds", JSON.stringify(showingGenreIds));
   }, [showingGenreIds]);
 
-  if ((typeof sessionStorage !== 'undefined') && (sessionStorage.getItem("currentView"))) {
+  if (
+    typeof sessionStorage !== "undefined" &&
+    sessionStorage.getItem("currentView")
+  ) {
     initialView = sessionStorage.getItem("currentView");
   } else {
     initialView = "map";
@@ -101,7 +107,7 @@ export default ({ data, pageContext }) => {
   }
 
   function selectAllGenres() {
-    setShowingGenreIds(getAllGenreIds())
+    setShowingGenreIds(getAllGenreIds());
   }
 
   function toggleFilters() {
@@ -121,10 +127,11 @@ export default ({ data, pageContext }) => {
   }
 
   const todayGenres = data.eventsByGenre.group;
-  const allGenreIds = getAllGenreIds()
+  const allGenreIds = getAllGenreIds();
   const { date } = pageContext;
   const showingMap = view === "map";
   const showingList = view === "list";
+  const noGenres = showingGenreIds.length === 0;
   const showingGenres = todayGenres.filter(genre =>
     showingGenreIds.includes(genre.fieldValue)
   );
@@ -136,11 +143,25 @@ export default ({ data, pageContext }) => {
         keywords={[`music`, `melbourne`]}
       />
       <DayNav current={date} />
-      {showingMap && <MainMap genres={showingGenres} />}
-      {showingList && <GenreEventsList genres={showingGenres} date={date} />}
+      {noGenres && (
+        <div style={{marginTop: "20px"}}>
+          <h3>No categories selected</h3>
+          <p>
+            Please use the 'Filter by category' button below to choose some
+            categories.
+          </p>
+        </div>
+      )}
+      {!noGenres && (
+        <div>
+          {showingList && <GenreEventsList genres={showingGenres} date={date} />}
+          {showingMap && <MainMap genres={showingGenres} />}
+        </div>
+      )}
       <BottomButtons
         onToggleFilters={toggleFilters}
         onChangeView={changeView}
+        currentView={view}
       />
       {showingFilters && (
         <GenreFilters

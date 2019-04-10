@@ -5,6 +5,7 @@ import {getGenreName} from "../consts/genres"
 import moment from "moment"
 import SEO from "../components/seo"
 import styled from 'styled-components'
+import Header from "../components/header"
 
 const SupportList = styled.ul`
 margin-left: 10px;
@@ -57,6 +58,7 @@ export default ({ data }) => {
   
   return (
     <Layout>
+    <Header title={event.title}></Header>
     <SEO title={event.title} keywords={[`music`, `melbourne`]} />
       <div>
         <h1>{event.title}</h1>

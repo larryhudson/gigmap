@@ -107,6 +107,8 @@ class GenreEventsList extends React.Component {
 	  const {genres, date} = this.props
 	  return (
 	  	<div style={{marginTop: "10px"}}>
+				{genres.length > 1 && (
+				<div>
 			  <GenreHeading p={['2','3']} id={'jump-to-genre' + date}>Jump to genre</GenreHeading>
 				<CardList>
 				{genres.map( genre => (
@@ -120,7 +122,8 @@ class GenreEventsList extends React.Component {
 					</JumpCard>
 				))}
 				</CardList>
-
+				</div>
+				)}
 	      {genres.map( genre => (
 	      <div key={'genre-events-' + date + genre.fieldValue}>
 				<div style={{display: 'flex', background: genreColour(genre.fieldValue, 0.25), justifyContent: 'space-between', marginBottom: '10px'}}>

@@ -1,5 +1,6 @@
 import React from "react";
 import styled from "styled-components";
+import {Link} from "gatsby"
 
 const BottomButtonsDiv = styled.div`
   display: flex;
@@ -14,8 +15,8 @@ const BottomButtonsDiv = styled.div`
 `;
 
 // resetting styles
-export const UnstyledButton = styled.button`
-  border: none;
+const resetButton = `
+border: none;
   margin: 0;
   padding: 0;
   width: auto;
@@ -33,7 +34,20 @@ export const UnstyledButton = styled.button`
   &:active {
     background: lightgray;
   }
+`
+
+export const UnstyledButton = styled.button`
+  ${resetButton}
 `;
+
+export const UnstyledLink = styled(Link)`
+  ${resetButton};
+  text-decoration: none;
+  padding: 10px;
+  color: black;
+`
+
+
 
 export default props => {
   function changeView() {
@@ -43,10 +57,13 @@ export default props => {
   function toggleFilters() {
     props.onToggleFilters();
   }
+
+  const {currentView} = props;
+  const changeButtonText = (currentView === "map") ? "View list" : "View map";
   return (
     <BottomButtonsDiv>
       <UnstyledButton onClick={toggleFilters}>Filter by category</UnstyledButton>
-      <UnstyledButton onClick={changeView}>Change view</UnstyledButton>
+      <UnstyledButton onClick={changeView}>{changeButtonText}</UnstyledButton>
     </BottomButtonsDiv>
   );
 };

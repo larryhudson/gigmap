@@ -7,7 +7,7 @@ import { Link, useStaticQuery, graphql } from 'gatsby'
 const FlexContainer = styled.div`
 display: flex;
 justify-content: space-between;
-margin-bottom: 0.25em;
+margin-bottom: 0;
 `
 
 const FlexItem = styled.div`
