@@ -13,7 +13,7 @@ const Wrapper = styled.div`
   height: auto;
   border: 2px solid #000;
   padding: 10px;
-  background-color: ${props => props.bg};
+  background-color: ${props => props.isFavourite ? "gold" : props.bg};
   color: ${props => (props.genre === 'arts-theatre-burlesque-markets') ? 'white' : 'black'};
   border-radius: 5px;
   user-select: none;
@@ -40,7 +40,8 @@ class MarkerBalloon extends Component {
     return <Wrapper
     alt={this.props.venue}
     bg={this.props.bg}
-    genre={this.props.genre}>
+    genre={this.props.genre}
+    isFavourite={this.props.isFavourite}>
     {this.props.children}
     <Link to={this.props.eventSlug}><strong>{this.props.eventTitle}</strong> at {this.props.venue}</Link>
     </Wrapper>

@@ -10,7 +10,7 @@ const Wrapper = styled.div`
   width: 20px;
   height: 20px;
   border: 2px solid #000;
-  background-color: ${props => props.bg};
+  background-color: ${props => props.isFavourite ? "gold" : props.bg};
   border-radius: 100%;
   user-select: none;
   transform: translate(-50%, -50%);
@@ -24,7 +24,8 @@ class Marker extends Component {
   render() {
     return <Wrapper
     alt={this.props.venue}
-    bg={this.props.bg}>
+    bg={this.props.bg}
+    isFavourite={this.props.isFavourite}>
     </Wrapper>
   }
 }

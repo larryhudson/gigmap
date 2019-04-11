@@ -14,7 +14,8 @@ const EventCard = styled(Link)`
   padding: 5px;
   color: black;
   margin-bottom: 10px;
-  text-decoration: none;
+	text-decoration: none;
+	border: 1px solid lightgray;
 
 @media (min-width: 480px) {
   flex-basis: calc(33.33% - 5px);
@@ -104,13 +105,23 @@ class GenreEventsList extends React.Component {
 	
   render() {
 
-	  const {genres, date} = this.props
+		const {genres, date, eventsAtFavouriteVenues} = this.props
 	  return (
-	  	<div style={{marginTop: "10px"}}>
+	  	<div style={{marginTop: "10px", marginBottom: "40px"}}>
 				{genres.length > 1 && (
 				<div>
 			  <GenreHeading p={['2','3']} id={'jump-to-genre' + date}>Jump to category</GenreHeading>
 				<CardList>
+				{eventsAtFavouriteVenues.length > 0 && (
+				<JumpCard
+					bg="lightyellow"
+					color='black'
+					href={'#' + date + "-favourite-venues"}
+					>
+					Events at your favourite venues ({eventsAtFavouriteVenues.length})
+					</JumpCard>
+				)}
+
 				{genres.map( genre => (
 					<JumpCard
 					key={'jump-to' + genre.fieldValue}
@@ -122,6 +133,23 @@ class GenreEventsList extends React.Component {
 					</JumpCard>
 				))}
 				</CardList>
+				</div>
+				)}
+				{eventsAtFavouriteVenues.length > 0 && (
+					<div>
+					<GenreHeading id={date + "-favourite-venues"} p={['2','3']} style={{background: "lightyellow", marginBottom: "10px"}}>Events at your favourite venues ({eventsAtFavouriteVenues.length})</GenreHeading>
+					<CardList>
+					{eventsAtFavouriteVenues.map( ({node: event}) => {
+		        return <EventCard key={event.slug} to={event.slug} color='black' bg={genreColour(event.genre, 0.25)}>
+		        <EventTitle>{event.title}</EventTitle>
+		        <EventVenue>{event.venue.name}</EventVenue><br />
+		        {event.startTime && event.startTime}<br />
+		        {event.price && (
+		          (event.price === '$0.00') ? 'Free' : event.price
+		        )}
+		        </EventCard>
+	        })}
+					</CardList>
 				</div>
 				)}
 	      {genres.map( genre => (

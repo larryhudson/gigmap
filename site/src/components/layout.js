@@ -4,7 +4,7 @@ import { StaticQuery, graphql } from "gatsby"
 
 import "./layout.css"
 
-const Layout = ({ children }) => (
+const Layout = ({ children, showingMap }) => (
   <StaticQuery
     query={graphql`
       query SiteTitleQuery {
@@ -16,19 +16,18 @@ const Layout = ({ children }) => (
       }
     `}
     render={data => (
-      <>
+      <React.Fragment>
         <div
           style={{
             margin: `0 auto`,
             maxWidth: 960,
             padding: `0px 0px 1.45rem`,
             paddingTop: 0,
-            height: '100vh'
           }}
         >
           <main>{children}</main>
         </div>
-      </>
+      </React.Fragment>
     )}
   />
 )

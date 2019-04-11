@@ -97,11 +97,11 @@ class MainMap extends Component {
   }
   _onChildClick(key, childProps) {
     const { openMarker } = this.state;
+    console.log(openMarker)
     if (openMarker === null || openMarker.key !== key) {
       let openMarker = {
         key,
-        eventTitle: childProps.eventTitle,
-        venue: childProps.venue
+        ...childProps
       };
       this.setState({ openMarker });
     }
@@ -113,7 +113,7 @@ class MainMap extends Component {
 
   render() {
     const { openMarker } = this.state;
-    const { genres } = this.props;
+    const { genres, favouriteVenues } = this.props;
     let showingEvents = [];
     genres.forEach(genre => {
       genre.edges.forEach(event => {
@@ -153,6 +153,7 @@ class MainMap extends Component {
                   eventSlug={event.slug}
                   bg={genreColour(event.genre)}
                   genre={event.genre}
+                  isFavourite={favouriteVenues.includes(event.venue.venueURL)}
                 >
                   <CloseBalloon onClick={this.closeBalloon}>X</CloseBalloon>
                 </Balloon>
@@ -168,6 +169,7 @@ class MainMap extends Component {
                 lng={event.venue.coords.lng}
                 eventSlug={event.slug}
                 bg={genreColour(event.genre)}
+                isFavourite={favouriteVenues.includes(event.venue.venueURL)}
               />
             );
           })}

@@ -1,10 +1,28 @@
-import React from "react"
+import React, {useState, useEffect} from "react"
 import { graphql } from "gatsby"
 import Layout from "../components/layout"
 import { Link } from "gatsby"
 import SEO from "../components/seo"
+import {UnstyledButton} from "../components/bottomButtons"
 
 export default ({ data }) => {
+  let initialFavouriteVenues;
+
+  if (
+    typeof localStorage !== "undefined" &&
+    localStorage.getItem("favouriteVenues")
+  ) {
+    initialFavouriteVenues = JSON.parse(localStorage.getItem("favouriteVenues"));
+  } else {
+    initialFavouriteVenues = [];
+  }
+
+  const [favouriteVenues, setFavouriteVenues] = useState(initialFavouriteVenues)
+
+  useEffect(() => {
+    localStorage.setItem("favouriteVenues", JSON.stringify(favouriteVenues));
+  }, [favouriteVenues]);
+
   let venue;
   let events;
   if (data.venuesJson) {
@@ -31,14 +49,32 @@ export default ({ data }) => {
       </Layout>
     )
   }
+
+  const isFavouriteVenue = favouriteVenues.includes(venue.venueURL)
+
+  const favouriteButtonText = isFavouriteVenue ? "Remove from favourites" : "Add to favourites"
+
+  function toggleFavouriteVenue() {
+    if (!isFavouriteVenue) {
+      setFavouriteVenues(previousFavouriteVenues =>
+        [...previousFavouriteVenues, venue.venueURL]
+      );
+    } else {
+      setFavouriteVenues(previousFavouriteVenues =>
+        previousFavouriteVenues.filter(venueURL => !(venueURL === venue.venueURL))
+      );
+    }
+  }
+
   return (
     <Layout>
     <SEO title={venue.name} keywords={[`music`, `melbourne`]} />
       <div>
-        <h1>Gigs at {venue.name}</h1>
+        <h1>{venue.name}</h1>
+        <UnstyledButton onClick={toggleFavouriteVenue}>{favouriteButtonText}</UnstyledButton>
         <ul>
         {events.map( ({node: event}) => (
-        <li key={event.id}><Link to={'/' + event.slug}>{event.title} on {event.date}</Link></li>
+        <li key={venue.venueURL + event.slug}><Link to={event.slug}>{event.title} on {event.date}</Link></li>
         ))}
         </ul>
         <p>Address: {venue.address}</p>
@@ -63,6 +99,7 @@ query($venueURL: String!) {
       id
       name
       address
+      venueURL
       coords {
         lat
         lng
