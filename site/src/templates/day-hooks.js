@@ -145,6 +145,19 @@ export default ({ data, pageContext }) => {
     }
   }
 
+  function toggleFavourite(venueURL) {
+    const isFavouriteVenue = favouriteVenues.includes(venueURL)
+    if (!isFavouriteVenue) {
+      setFavouriteVenues(previousFavouriteVenues =>
+        [...previousFavouriteVenues, venueURL]
+      );
+    } else {
+      setFavouriteVenues(previousFavouriteVenues =>
+        previousFavouriteVenues.filter(otherURL => !(otherURL === venueURL))
+      );
+    }
+  }
+
   const todayGenres = data.eventsByGenre.group;
   const allGenreIds = getAllGenreIds();
   const { date } = pageContext;
@@ -157,7 +170,6 @@ export default ({ data, pageContext }) => {
   const eventsAtFavouriteVenues = data.allEvents.edges.filter(event =>
     favouriteVenues.includes(event.node.venue.venueURL)
   );
-  console.log(eventsAtFavouriteVenues)
   return (
     <Layout showingMap={showingMap}>
       <Header title={moment(date).format("dddd DD MMMM")} />
@@ -184,7 +196,13 @@ export default ({ data, pageContext }) => {
               date={date}
             />
           )}
-          {showingMap && <MainMap genres={showingGenres} favouriteVenues={favouriteVenues} />}
+          {showingMap && (
+            <MainMap
+              genres={showingGenres}
+              favouriteVenues={favouriteVenues}
+              onToggleFavourite={toggleFavourite}
+            />
+          )}
         </div>
       )}
       <BottomButtons
@@ -206,46 +224,6 @@ export default ({ data, pageContext }) => {
 };
 
 export const pageQuery = graphql`
-  # Welcome to GraphiQL
-  #
-  # GraphiQL is an in-browser tool for writing, validating, and
-  # testing GraphQL queries.
-  #
-  # Type queries into this side of the screen, and you will see intelligent
-  # typeaheads aware of the current GraphQL type schema and live syntax and
-  # validation errors highlighted within the text.
-  #
-  # GraphQL queries typically start with a "{" character. Lines that starts
-  # with a # are ignored.
-  #
-  # An example GraphQL query might look like:
-  #
-  #     {
-  #       field(arg: "value") {
-  #         subField
-  #       }
-  #     }
-  #
-  # Keyboard shortcuts:
-  #
-  #  Prettify Query:  Shift-Ctrl-P (or press the prettify button above)
-  #
-  #       Run Query:  Ctrl-Enter (or press the play button above)
-  #
-  #   Auto Complete:  Ctrl-Space (or just start typing)
-  #
-
-  # query($venueURL: String!) {
-  #     allEventsJson(filter: { venueURL: { eq: $venueURL } } ) {
-  #     edges {
-  #       node {
-  #         title
-  #         date
-  #       }
-  #     }
-  #   }
-  #   }
-
   query($date: String!) {
     eventsByGenre: allEventsJson(filter: { date: { eq: $date } }) {
       group(field: genre) {
@@ -265,6 +243,9 @@ export const pageQuery = graphql`
             }
             date(formatString: "dddd DD MMMM")
             price
+            supports {
+              name
+            }
             venue {
               name
               venueURL

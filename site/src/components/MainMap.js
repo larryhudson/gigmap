@@ -2,7 +2,7 @@ import React, { Component } from "react";
 
 // components:
 import Marker from "../components/Marker";
-import Balloon, { CloseBalloon } from "../components/Balloon";
+import Balloon, { CloseBalloon, InfoWindow } from "../components/Balloon";
 import { genreColour } from "../consts/genres";
 import mapStyles from "./mapStyles.json";
 
@@ -70,6 +70,7 @@ class MainMap extends Component {
     this.state = { openMarker: null };
     this._onChildClick = this._onChildClick.bind(this);
     this.closeBalloon = this.closeBalloon.bind(this);
+    this.toggleFavourite = this.toggleFavourite.bind(this);
   }
 
   componentDidUpdate(prevProps) {
@@ -97,7 +98,6 @@ class MainMap extends Component {
   }
   _onChildClick(key, childProps) {
     const { openMarker } = this.state;
-    console.log(openMarker)
     if (openMarker === null || openMarker.key !== key) {
       let openMarker = {
         key,
@@ -109,6 +109,10 @@ class MainMap extends Component {
 
   closeBalloon() {
     this.setState({ openMarker: null });
+  }
+
+  toggleFavourite(venueURL) {
+    this.props.onAddToFavourites(venueURL)
   }
 
   render() {
@@ -141,24 +145,6 @@ class MainMap extends Component {
         >
           {showingEvents.map(({ node: event }) => {
             const isOpen = openMarker && openMarker.key === event.slug;
-            if (isOpen) {
-              return (
-                <Balloon
-                  isOpen={isOpen}
-                  key={event.slug}
-                  venue={event.venue.name}
-                  eventTitle={event.title}
-                  lat={event.venue.coords.lat}
-                  lng={event.venue.coords.lng}
-                  eventSlug={event.slug}
-                  bg={genreColour(event.genre)}
-                  genre={event.genre}
-                  isFavourite={favouriteVenues.includes(event.venue.venueURL)}
-                >
-                  <CloseBalloon onClick={this.closeBalloon}>X</CloseBalloon>
-                </Balloon>
-              );
-            }
             return (
               <Marker
                 isOpen={isOpen}
@@ -170,10 +156,18 @@ class MainMap extends Component {
                 eventSlug={event.slug}
                 bg={genreColour(event.genre)}
                 isFavourite={favouriteVenues.includes(event.venue.venueURL)}
+                price={event.price}
+                genre={event.genre}
+                supports={event.supports}
+                startTime={event.startTime}
+                venueURL={event.venue.venueURL}
               />
             );
           })}
         </GoogleMapReact>
+        {openMarker && (
+            <InfoWindow event={openMarker} isFavourite={favouriteVenues.includes(openMarker.venueURL)} onCloseInfoWindow={this.closeBalloon} onToggleFavourite={(venueURL) => this.props.onToggleFavourite(venueURL)} />
+          )}
       </Wrapper>
     );
   }
