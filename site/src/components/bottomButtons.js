@@ -58,12 +58,17 @@ export default props => {
     props.onToggleFilters();
   }
 
+  function setLocation() {
+    props.onSetLocation();
+  }
+
   const {currentView} = props;
   const changeButtonText = (currentView === "map") ? "View list" : "View map";
   return (
     <BottomButtonsDiv>
       <UnstyledButton onClick={toggleFilters}>Filter by category</UnstyledButton>
       <UnstyledButton onClick={changeView}>{changeButtonText}</UnstyledButton>
+      <UnstyledButton onClick={setLocation}>Location</UnstyledButton>
     </BottomButtonsDiv>
   );
 };

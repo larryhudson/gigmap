@@ -60,7 +60,6 @@ export const CloseBalloon = styled.div`
 `;
 
 export const InfoWindow = props => {
-  console.log(props)
   function closeInfoWindow() {
     props.onCloseInfoWindow();
   }
@@ -70,7 +69,7 @@ export const InfoWindow = props => {
     : "Favourite venue";
   return (
     <InfoWindowDiv bg={event.bg} genre={event.genre}>
-      <div style={{ maxWidth: "720px", margin: "0 auto" }}>
+      <div style={{ maxWidth: "960px", margin: "0 auto" }}>
         <div style={{ display: "flex", justifyContent: "space-between" }}>
           <div style={{ display: "flex", justifyContent: "space-between", width: "100%" }}>
             <div>
@@ -90,6 +89,8 @@ export const InfoWindow = props => {
                   : `${event.price}`}
                 <br />
                 {event.startTime && `${event.startTime}`}
+                <br />
+                {event.distance && `${event.distance}`}
               </p>
             </div>
           </div>

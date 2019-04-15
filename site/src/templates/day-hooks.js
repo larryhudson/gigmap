@@ -109,6 +109,8 @@ export default ({ data, pageContext }) => {
 
   const [showingFilters, setShowingFilters] = useState(null);
 
+  const [currentLocation, setCurrentLocation] = useState(null);
+
   function handleGenreChange(e) {
     const thisGenreId = e.target.name;
 
@@ -158,6 +160,20 @@ export default ({ data, pageContext }) => {
     }
   }
 
+  function setLocation() {
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        position => {
+          setCurrentLocation(prevLocation => ({
+            ...prevLocation,
+            lat: position.coords.latitude,
+            lng: position.coords.longitude
+          }))
+        }
+      )
+    }
+  }
+
   const todayGenres = data.eventsByGenre.group;
   const allGenreIds = getAllGenreIds();
   const { date } = pageContext;
@@ -194,6 +210,7 @@ export default ({ data, pageContext }) => {
               eventsAtFavouriteVenues={eventsAtFavouriteVenues}
               genres={showingGenres}
               date={date}
+              location={currentLocation}
             />
           )}
           {showingMap && (
@@ -201,6 +218,7 @@ export default ({ data, pageContext }) => {
               genres={showingGenres}
               favouriteVenues={favouriteVenues}
               onToggleFavourite={toggleFavourite}
+              location={currentLocation}
             />
           )}
         </div>
@@ -209,6 +227,7 @@ export default ({ data, pageContext }) => {
         onToggleFilters={toggleFilters}
         onChangeView={changeView}
         currentView={view}
+        onSetLocation={setLocation}
       />
       {showingFilters && (
         <GenreFilters

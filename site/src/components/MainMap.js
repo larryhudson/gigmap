@@ -22,6 +22,28 @@ const MELB_CENTER = [-37.8124, 144.9623];
 
 const defaultMapOptions = {
   styles: mapStyles
+};
+
+function getDistance(venueCoords, location) {
+  if (location) {
+    var R = 6371; // Radius of the earth in km
+    var dLat = deg2rad(venueCoords.lat-location.lat);  // deg2rad below
+    var dLng = deg2rad(venueCoords.lng-location.lng); 
+    var a = 
+      Math.sin(dLat/2) * Math.sin(dLat/2) +
+      Math.cos(deg2rad(venueCoords.lat)) * Math.cos(deg2rad(location.lat)) * 
+      Math.sin(dLng/2) * Math.sin(dLng/2)
+      ; 
+    var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a)); 
+    var d = R * c; // Distance in km
+    return d.toFixed(2) + "km";
+
+    function deg2rad(deg) {
+      return deg * (Math.PI/180)
+    }
+  } else {
+    return null
+  }
 }
 
 // Return map bounds based on list of places
@@ -112,12 +134,13 @@ class MainMap extends Component {
   }
 
   toggleFavourite(venueURL) {
-    this.props.onAddToFavourites(venueURL)
+    this.props.onAddToFavourites(venueURL);
   }
 
   render() {
-    const { openMarker } = this.state;
+    const { openMarker, showingLocation } = this.state;
     const { genres, favouriteVenues } = this.props;
+    console.log(this.props.location);
     let showingEvents = [];
     genres.forEach(genre => {
       genre.edges.forEach(event => {
@@ -126,6 +149,7 @@ class MainMap extends Component {
         }
       });
     });
+    
 
     return (
       <Wrapper>
@@ -153,6 +177,7 @@ class MainMap extends Component {
                 eventTitle={event.title}
                 lat={event.venue.coords.lat}
                 lng={event.venue.coords.lng}
+                distance={getDistance(event.venue.coords, this.props.location)}
                 eventSlug={event.slug}
                 bg={genreColour(event.genre)}
                 isFavourite={favouriteVenues.includes(event.venue.venueURL)}
@@ -164,10 +189,24 @@ class MainMap extends Component {
               />
             );
           })}
+          {this.props.location && (
+            <Marker
+              lat={this.props.location.lat}
+              lng={this.props.location.lng}
+              bg="purple"
+            />
+          )}
         </GoogleMapReact>
         {openMarker && (
-            <InfoWindow event={openMarker} isFavourite={favouriteVenues.includes(openMarker.venueURL)} onCloseInfoWindow={this.closeBalloon} onToggleFavourite={(venueURL) => this.props.onToggleFavourite(venueURL)} />
-          )}
+          <InfoWindow
+            event={openMarker}
+            isFavourite={favouriteVenues.includes(openMarker.venueURL)}
+            onCloseInfoWindow={this.closeBalloon}
+            onToggleFavourite={venueURL =>
+              this.props.onToggleFavourite(venueURL)
+            }
+          />
+        )}
       </Wrapper>
     );
   }
