@@ -5,6 +5,7 @@ import Marker from "../components/Marker";
 import Balloon, { CloseBalloon, InfoWindow } from "../components/Balloon";
 import { genreColour } from "../consts/genres";
 import mapStyles from "./mapStyles.json";
+import {FaMapMarker} from "react-icons/fa";
 
 // examples:
 import GoogleMapReact from "google-map-react";
@@ -190,10 +191,16 @@ class MainMap extends Component {
             );
           })}
           {this.props.location && (
-            <Marker
+            <FaMapMarker
               lat={this.props.location.lat}
               lng={this.props.location.lng}
-              bg="purple"
+              bg="red"
+              stroke="black"
+              strokeWidth="40px"
+              eventTitle="You are here!"
+              strokeLinecap="round"
+              color="red"
+              style={{width: "40px", height: "40px", padding: "5px"}}
             />
           )}
         </GoogleMapReact>

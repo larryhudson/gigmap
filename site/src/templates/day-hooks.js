@@ -228,6 +228,7 @@ export default ({ data, pageContext }) => {
         onChangeView={changeView}
         currentView={view}
         onSetLocation={setLocation}
+        locationIsSet={currentLocation}
       />
       {showingFilters && (
         <GenreFilters

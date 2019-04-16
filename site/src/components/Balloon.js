@@ -4,8 +4,9 @@ import PropTypes from "prop-types";
 import styled from "styled-components";
 import { Link } from "gatsby";
 import {UnstyledButton, UnstyledLink} from "./bottomButtons"
+import {space} from "styled-system"
 
-const Wrapper = styled.div`
+const MarkerWrapper = styled.div`
   position: absolute;
   top: 50%;
   left: 50%;
@@ -13,7 +14,6 @@ const Wrapper = styled.div`
   font-size: 14px;
   height: auto;
   border: 2px solid #000;
-  padding: 10px;
   background-color: ${props => (props.isFavourite ? "gold" : props.bg)};
   color: ${props =>
     props.genre === "arts-theatre-burlesque-markets" ? "white" : "black"};
@@ -28,6 +28,7 @@ const Wrapper = styled.div`
       props.genre === "arts-theatre-burlesque-markets" ? "white" : "black"};
     text-decoration: none;
   }
+  ${space};
 `;
 
 const InfoWindowDiv = styled.div`
@@ -110,17 +111,17 @@ export const InfoWindow = props => {
 class MarkerBalloon extends Component {
   render() {
     return (
-      <Wrapper
+      <MarkerWrapper
         alt={this.props.venue}
-        bg={this.props.bg}
+        bg={this.props.isFavourite ? "gold" : this.props.bg}
         genre={this.props.genre}
-        isFavourite={this.props.isFavourite}
+        p={5}
       >
         {this.props.children}
         <Link to={this.props.eventSlug}>
           <strong>{this.props.eventTitle}</strong> at {this.props.venue}
         </Link>
-      </Wrapper>
+      </MarkerWrapper>
     );
   }
 }

@@ -62,13 +62,13 @@ export default props => {
     props.onSetLocation();
   }
 
-  const {currentView} = props;
+  const {currentView, locationIsSet} = props;
   const changeButtonText = (currentView === "map") ? "View list" : "View map";
   return (
     <BottomButtonsDiv>
       <UnstyledButton onClick={toggleFilters}>Filter by category</UnstyledButton>
       <UnstyledButton onClick={changeView}>{changeButtonText}</UnstyledButton>
-      <UnstyledButton onClick={setLocation}>Location</UnstyledButton>
+      {!locationIsSet && <UnstyledButton onClick={setLocation}>Near me</UnstyledButton>}
     </BottomButtonsDiv>
   );
 };

@@ -2,51 +2,55 @@ import PropTypes from "prop-types";
 import React from "react";
 import { getGenreName, genreColour } from "../consts/genres";
 import styled from "styled-components";
-import { space } from "styled-system";
+import { space, flexBasis } from "styled-system";
 import { Link } from "gatsby";
 import AnchorLink from "react-anchor-link-smooth-scroll";
 
 const EventCard = styled(Link)`
   background: ${props => (props.bg ? props.bg : "lightgray")};
   list-style-type: none;
-  flex-basis: calc(50% - 5px);
+  flex-basis: calc(33.33% - 5px);
   font-size: 90%;
   padding: 5px;
   color: black;
-  margin-bottom: 10px;
+  margin-bottom: 5px;
+  margin-right: 5px;
   text-decoration: none;
   border: 1px solid lightgray;
 
   @media (min-width: 480px) {
-    flex-basis: calc(33.33% - 5px);
+    flex-basis: calc(25% - 10px);
     padding: 10px;
     font-size: 100%;
   }
 
   @media (min-width: 768px) {
-    flex-basis: calc(25% - 5px);
+    flex-basis: calc(20% - 10px);
+    margin-right: 10px;
+    margin-bottom: 10px;
   }
 `;
 
 const JumpCard = styled(AnchorLink)`
   background: ${props => (props.bg ? props.bg : "lightgray")};
   list-style-type: none;
-  flex-basis: calc(50% - 5px);
+  flex-basis: calc(50% - 10px);
   font-size: 90%;
   padding: 5px;
   color: black;
   margin-bottom: 10px;
   text-decoration: none;
   border: 1px solid lightgray;
+  margin-right: 10px;
 
   @media (min-width: 480px) {
-    flex-basis: calc(33.33% - 5px);
+    flex-basis: calc(33.33% - 10px);
     padding: 10px;
     font-size: 100%;
   }
 
   @media (min-width: 768px) {
-    flex-basis: calc(25% - 5px);
+    flex-basis: calc(20% - 10px);
   }
 `;
 
@@ -76,7 +80,7 @@ const CardList = styled.div`
   display: flex;
   flex-direction: row;
   flex-wrap: wrap;
-  justify-content: space-between;
+  margin-right: -10px;
 `;
 
 const EventTitle = styled.h4`
@@ -125,6 +129,21 @@ function getDistance(venueCoords, location) {
 class GenreEventsList extends React.Component {
   render() {
     const { genres, date, eventsAtFavouriteVenues, location } = this.props;
+    let sortedEventsAtFavouriteVenues;
+    if (eventsAtFavouriteVenues.length > 0) {
+      sortedEventsAtFavouriteVenues = eventsAtFavouriteVenues.map(({ node: event }) => {
+        return {...event,
+                distance: getDistance(event.venue.coords, location)}
+      }).sort((a, b) => {
+        if (a.venue.coords === null) {
+          return 1
+        } else if (b.venue.coords === null) {
+          return -1
+        } else {
+          return (a.distance > b.distance) ? 1 : -1
+        }
+      })
+    }
     return (
       <div style={{ marginTop: "10px", marginBottom: "40px" }}>
         {genres.length > 1 && (
@@ -167,7 +186,7 @@ class GenreEventsList extends React.Component {
               Events at your favourite venues ({eventsAtFavouriteVenues.length})
             </GenreHeading>
             <CardList>
-              {eventsAtFavouriteVenues.map(({ node: event }) => {
+              {sortedEventsAtFavouriteVenues.map((event) => {
                 return (
                   <EventCard
                     key={event.slug}
@@ -182,6 +201,9 @@ class GenreEventsList extends React.Component {
                     <br />
                     {event.price &&
                       (event.price === "$0.00" ? "Free" : event.price)}
+                    {event.distance && <span><br />
+												{event.distance.toFixed(2) + "km"}</span>
+											}
                   </EventCard>
                 );
               })}
