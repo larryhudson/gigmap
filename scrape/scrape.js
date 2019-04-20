@@ -49,13 +49,13 @@ function cullOldEvents(events, dates) {
 
 // NEW WAY OF DOING THINGS - GETTING MORE INFO FOR EVENTS
 async function main2() {
+	console.log(process.env.REACT_APP_MY_NETLIFY_TEST)
 	const dates = getDaysFromToday(7)
 	
 	// only keep events that have dates in our range.
 	let eventsFromFile = await readJSONfromS3(s3, 'events')
 	const existingEvents = cullOldEvents(eventsFromFile, dates)
-	const cullCount = eventsFromFile.length - existingEvents.length
-	console.log( "culled " + cullCount + " old events" )
+	console.log( "culled " + (eventsFromFile.length - existingEvents.length) + " old events" )
 
 	// get new events from web
 	const existingEventSlugs = existingEvents.map(({slug}) => slug)
