@@ -1,141 +1,95 @@
-const rpOptions = require("./html")
-const rp = require('request-promise')
-const moment = require('moment-timezone')
-
+const rpOptions = require("./html");
+const rp = require("request-promise");
+const moment = require("moment-timezone");
+const config = require("../config");
 
 async function parseEventPages(events) {
-	// venueURLs is a list of strings
-	return Promise.all(
-		eventsMap = events.map(
-			async event => await parseEventPage(event)
-		)
-	)
+  // venueURLs is a list of strings
+  return Promise.all(
+    (eventsMap = events.map(async event => await parseEventPage(event)))
+  );
 }
 
 async function parseEventPage(event) {
-	// because we're updating the whole event, we need all the info
-	// so we can return it all.
-	// html is the html of the venue page
+  // because we're updating the whole event, we need all the info
+  // so we can return it all.
 
-	const eventOptions = rpOptions('http://www.beat.com.au/' + event.slug);
+  const eventPageUrl = config.eventPage.getUrl(event);
 
-	return rp(eventOptions).then(async ($) => {
-		// need to get: start time, artists and supports, ticket / info link.
-		try {
-			const startTime = $('.gigguide_node-summary-detail .date-display-single').eq(0).text().split(' @ ')[1];
-			// artists:
-			const mainArtistTag = $('.artist .gigguide_node-summary-detail a').eq(0)
-			const mainArtist = {
-				name: mainArtistTag.text(),
-				slug: mainArtistTag.attr('href').replace('/category/gig-artist/', '')
-			}
+  const eventOptions = rpOptions(eventPageUrl);
 
-			// support artists: 
-			const supportLabel = $('h5.label-inline.gigguide_gigdetail-field-label:contains("Supports:")').eq(0)
-			const afterSupports = $('h5.label-inline.gigguide_gigdetail-field-label')
+  return rp(eventOptions)
+    .then(async $ => {
+      try {
+        let newData = {};
+        config.eventPage.fields.forEach(field => {
+          if (field.get($)) {
+            newData[field.name] = field.get($);
+          }
+        });
 
-			const supportTags = supportLabel.nextUntil(afterSupports)
-			let supports = undefined;
-			const supportsMap = supportTags.map((index, tag) => {
-				const aTag = $(tag).find('a')
-				const name = aTag.text()
-				const slug = aTag.attr('href').replace('/category/gig-support/', '')
-				return { name, slug }
-			}).get()
-
-			if (supportsMap.length > 0) {
-				supports = supportsMap
-			}
-
-			// info link:
-			const infoLinkTag = $('.gigguide_node-summary-detail.buy-tickets-button a').eq(0)
-			const infoLink = {
-				text: infoLinkTag.text(),
-				href: infoLinkTag.attr('href')
-			}
-			const scraped = true
-
-			return {
-				...event,
-				startTime,
-				mainArtist,
-				supports,
-				infoLink,
-				scraped,
-			}
-		}
-		catch (err) {
-			// if there's a cheerio error, we just return the event with scraped = true so
-			// it doesn't get scraped again. bit of a cop out but better than trying over
-			// and over again.
-			return {
-				...event,
-				scraped: true
-			}
-		}
-	})
-		.catch(function (err) {
-			// API call failed...
-			console.log(err)
-			return {
-				...event,
-				scraped: true
-			}
-		});
+        return {
+          ...event,
+          ...newData,
+          scraped: true
+        };
+      } catch (err) {
+        // if there's a cheerio error, we just return the event with scraped = true so
+        // it doesn't get scraped again. could try to be more resilient? keep the data that we can find?
+        return {
+          ...event,
+          scraped: true
+        };
+      }
+    })
+    .catch(function(err) {
+      // API call failed...
+      console.log(err);
+      return {
+        ...event,
+        scraped: true
+      };
+    });
 }
 
 // function get individual event info
-function parseEvent($, event) {
-	// event needs to be the wrapper JQuery element
-	// return a dict with: title, venueId, genre, date, region, price, infolink
-	let dateStr = $(event).find('.sidebar_gig-date.day').text() + ' ' + $(event).find('.sidebar_gig-date.month').text() + ' 2019';
+function parseEvent($eventDiv) {
+  // event needs to be the wrapper JQuery element
+  // return a dict with: title, venueId, genre, date, region, price, infolink
+  let eventObj = {}
 
-	return {
-		title: $(event).find('h3').text(),
-		venueURL: 'http://www.beat.com.au' + $(event).find('h5').eq(1).find('a').attr('href'),
-		venueName: $(event).find('h5').eq(1).text(),
-		genre: $(event).attr('class').split(' ').pop(),
-		date: moment.utc(dateStr, 'DD MMM YYYY'),
-		region: $(event).find('h5').eq(2).text(),
-		price: $(event).find('h5').eq(3).text(),
-		slug: $(event).find('h3 a').attr('href'),
-		beatLink: ('http://www.beat.com.au' + $(event).find('h3 a').attr('href'))
-	}
+  config.datePage.fields.forEach(field => {
+    if (field.get($eventDiv)) {
+      eventObj[field.name] = field.get($eventDiv)
+    }
+  })
+
+  return eventObj
 }
 
 // function to get events HTML for date
-async function getEvents(date) {
-	// date is optional. if not supplied, it will get today's gigs
-	// if date is supplied, needs to be in YYYY-MM-DD string format
-	let dateString = ''
+async function getEvents(date=new Date()) {
+  // date is optional. if not supplied, it will get today's gigs
+  const dateURL = config.datePage.getUrl(date);
 
-	if (date === undefined) {
-		dateString = ''
-	} else {
-		dateString = date
-	}
-	const dateURL = 'http://www.beat.com.au/gig-guide/' + dateString;
+  let events = [];
 
-	let events = [];
-
-	return rp(rpOptions(dateURL)).then(function ($) {
-		const eventDivs = $('.archive_node-summary-wrapper');
-		eventDivs.each(function (i, event) {
-			events[i] = parseEvent($, event)
-		})
-		return events
-	})
+  return rp(rpOptions(dateURL)).then(function($) {
+    const eventDivs = $(config.datePage.eventSelector);
+    eventDivs.each(function(i, event) {
+      events[i] = parseEvent($(event));
+    });
+    return events;
+  });
 }
 
 async function dayEvents(dates) {
-	return Promise.all(
-		dates.map(
-			async date => await getEvents(date)
-		)
-	).then(arraysOfEvents => {
-		// flatten array of arrays into one array of events.
-		return arraysOfEvents.reduce((acc, val) => acc.concat(val))
-	})
+  return Promise.all(dates.map(async date => await getEvents(date))).then(
+    arraysOfEvents => {
+      // flatten array of arrays into one array of events.
+      return arraysOfEvents.reduce((acc, val) => acc.concat(val));
+    }
+  );
 }
 
-module.exports = { dayEvents, parseEventPages, parseEventPage }
+module.exports = { dayEvents, parseEventPages, parseEventPage, getEvents };
