@@ -54,9 +54,6 @@ function DayNav({current}) {
   `)
   const today = dateQuery.dates.group[0].fieldValue
 	const dates = dateQuery.dates.group
-	console.log(dates)
-	console.log(current)
-
   return (
   	<FlexContainer>
 		{dates.map(({fieldValue: date}) => {

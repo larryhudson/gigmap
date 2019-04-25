@@ -141,7 +141,6 @@ class MainMap extends Component {
   render() {
     const { openMarker, showingLocation } = this.state;
     const { genres, favouriteVenues } = this.props;
-    console.log(this.props.location);
     let showingEvents = [];
     genres.forEach(genre => {
       genre.edges.forEach(event => {
