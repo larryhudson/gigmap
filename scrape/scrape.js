@@ -18,6 +18,12 @@ require("dotenv").config();
 const moment = require("moment-timezone");
 const AWS = require("aws-sdk");
 
+AWS.config.update({
+  accessKeyId: process.env.MY_AWS_ACCESS_KEY_ID,
+  secretAccessKey: process.env.MY_AWS_SECRET_ACCESS_KEY,
+  region: process.env.MY_AWS_REGION
+});
+
 var s3 = new AWS.S3();
 
 // WHEN STARTING FROM NOTHING: GET ALL EVENTS AND VENUES.
