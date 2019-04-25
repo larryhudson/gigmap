@@ -11,7 +11,8 @@ require("dotenv").config({
 
 const path = require(`path`)
 const uniqBy = require('lodash.uniqby');
-const moment = require('moment');
+const moment = require('moment-timezone');
+const config = require('../scrape/config');
 
 
 exports.createPages = ({ graphql, actions }) => {
@@ -71,7 +72,7 @@ exports.createPages = ({ graphql, actions }) => {
         return fieldValue
       })
     dates.forEach((date, index) => {
-      let dateStr = moment(date).format('DD-MM-YYYY')
+      let dateStr = moment.tz(date, config.timezone).format('DD-MM-YYYY')
       createPage({
       path: (index === 0 ? '/' : path.join('/day', dateStr)),
       component: path.resolve('./src/templates/day.js'),
