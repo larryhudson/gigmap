@@ -47,12 +47,13 @@ const config = {
       {
         name: "date",
         get: $eventDiv => 
-          moment.utc(
+          moment.tz(
             $eventDiv.find(".sidebar_gig-date.day").text() +
               " " +
               $eventDiv.find(".sidebar_gig-date.month").text() +
               " 2019",
-            "DD MMM YYYY"
+            "DD MMM YYYY",
+            config.timezone
           )
       },
       {

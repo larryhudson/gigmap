@@ -12,6 +12,7 @@ const {
 } = require("./utils/venues");
 const { combineData, uncombineData } = require("./utils/combine");
 const { readJSONfromS3, uploadFiles } = require("./utils/s3");
+const config = require('./config')
 require("dotenv").config();
 
 const moment = require("moment-timezone");
@@ -48,9 +49,9 @@ function combineExistingFiles() {
 
 function cullOldEvents(events, dates) {
   // only returns events that are within the date range.
-  console.log(dates)
+  const dateStrs = dates.map(date => date.format('DD-MM-YYYY'))
   return events.filter(event =>
-    dates.includes(moment(event.date))
+    dateStrs.includes(moment.tz(event.date, config.timezone).format('DD-MM-YYYY'))
   );
 }
 
@@ -59,7 +60,7 @@ async function main2() {
   const dates = getDaysFromToday(7);
 
   // only keep events that have dates in our range.
-  let eventsFromFile = await readJSONfromS3(s3, "events");
+  let eventsFromFile = await readJSONfromS3(s3, 'events');
   const existingEvents = cullOldEvents(eventsFromFile, dates);
   console.log(
     "culled " + (eventsFromFile.length - existingEvents.length) + " old events"
@@ -67,7 +68,6 @@ async function main2() {
 
   // get new events from web
   const existingEventSlugs = existingEvents.map(({ slug }) => slug);
-  console.log(existingEventSlugs)
   // get all events from web
   const eventsFromWeb = await dayEvents(dates);
   // work out which events are new
@@ -82,7 +82,7 @@ async function main2() {
   // get info for first 50
   const unscrapedEvents = events.filter(event => !event.scraped);
   console.log(unscrapedEvents.length + " events to scrape");
-  const eventsToScrape = unscrapedEvents.slice(0, 50);
+  const eventsToScrape = unscrapedEvents.slice(0,50);
   const scrapedEvents = await parseEventPages(eventsToScrape);
 
   // overwrite old event in array
