@@ -10,7 +10,6 @@ const SecondPage = () => (
     <Header title="About" hideAboutLink />
     <SEO title="About" />
     <div style={{ padding: "10px" }}>
-      <p>Hi! My name's Larry.</p>
       <p>
         Gigmap is a little app that shows you what's going on around Melbourne.
       </p>
@@ -20,20 +19,16 @@ const SecondPage = () => (
         .
       </p>
       <p>
-        I made this app using <a href="http://gatsbyjs.org">Gatsby</a>,{" "}
+        This app was made using <a href="http://gatsbyjs.org">Gatsby</a>,{" "}
         <a href="https://reactjs.org">React</a>,{" "}
         <a href="https://aws.amazon.com/s3/">Amazon S3</a> and{" "}
         <a href="https://netlify.com">Netlify</a>.
       </p>
       <p>
-        I don't plan on making a native iPhone or Android app for this site.
+        There are no plans to make a native iPhone or Android app for this site.
         However, you can add Gigmap to your home screen for easy access.
       </p>
-      <p>I'm still working on adding features. Here's what I want to add:</p>
-      <ul>
-        <li>Being able to mark venues and categories as 'favourites'</li>
-        <li>Being able to see events around you.</li>
-      </ul>
+      <p>This project is open source. If you'd like to contribute, <a href="https://www.github.com/larryhudson/gigmap">you can find the project on GitHub</a>.</p>
       <p>
         You can <a href="mailto:harryludson@gmail.com">send me an email</a> if
         you have any questions or suggestions.
