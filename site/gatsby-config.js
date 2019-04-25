@@ -1,8 +1,8 @@
 module.exports = {
   siteMetadata: {
     title: `Gigmap`,
-    description: `Kick off your next, great Gatsby project with this default starter. This barebones starter ships with the main Gatsby configuration files you might need.`,
-    author: `@gatsbyjs`,
+    description: `Find out what's happening in Melbourne this week. Music, comedy, theatre and more`,
+    author: `@larryhudsondev`,
   },
   // mapping: {
   //   'EventsJson.venue': 'VenuesJson.venueURL',
