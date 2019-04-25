@@ -1,16 +1,26 @@
 # Gigmap
-This is a Gatsby app that scrapes [Beat Magazine](https://www.beat.com.au/gig-guide/)'s weekly gig guide.
+This is a Gatsby app that shows you what's going on in Melbourne this week - music, comedy, theatre and more. It scrapes [Beat Magazine](https://www.beat.com.au/gig-guide/)'s weekly gig guide.
 
 I've got it hosted at Netlify. [You can see it here](https://gigmap.netlify.com).
 
-It rebuilds every hour.
+## Add your city!
 
-To do:
-- ~Get more info for each event. At the moment it only scrapes the day pages, but if I scrape each event page, it'll be able to get ticket links, artists and support artists and start times. But I can't ask Beat Mag for 500 events at a time, so it needs to be a bit more clever.~ Done. It scrapes 25 unscraped events on each build. This was a bit trickier than I thought it would be - it meant hosting the events.json and venues.json files in an Amazon S3 bucket and reading and writing to it on each build. But it seems to be working well now.
-- Make the map easier to use. Instead of just linking to event pages, little info windows should overlay the map. Maybe just venue name and event name
-- ~Should be able to filter what you want to see on the map, and have each category be colour coded.~ This is done now, and it means I've learned a lot about React state and props. The category filter controls what markers are on the map and what the events list shows below the filters. Still to do: different shapes for accessibility (people who can't differentiate between colours).
-- ~The home page should have today's events. At the moment it just has a list of days and a map of all the venues that have an event this week. Solution: Get rid of pages/index.js template file and get first date's path to be index.~ This is done! Makes it a little more complicated to do next/prev links, but it's working for now.
-- I'd also like to make the app more reusable and extendable. Eg: Declaring all the Beat Magazine-specific stuff in a constants file, then trying to replace that data with some aggregator site from Sydney. Should be an interesting experiment.
-- Fix date parsing bug. MomentJS doesn't like the format that I'm giving to it, so it needs to be in ISO format or something. I think it's causing a bug on Firefox.
-- Look into history / state management. At the moment if I have 3 genres ticked, and I click over to the next day, it selects all 8 categories. Likewise, if I have 3 ticked and look at an event, then come back, it has all the categories ticked.
-- Fix title tag rendering - need to format date into nice string again.
+The scraping function reads all the Melbourne-specific info from scrape/config.js, which means you can add your own city by writing a new config file. The goal is to have lots of cities, so that when one developer improves the app, it improves all the different versions of Gigmap. Instructions on how to set up a new config are coming soon.
+
+If this sounds like an interesting project, please send me a message or dig into the code and submit a PR. I'm open to all suggestions.
+
+## To do
+
+This is a work in progress, and it's my first open source project. There's a lot to do:
+- Come up with a way to handle multiple city configurations. This might be similar to the way that big Gatsby sites handle internationalisation - same templates, but different data. I don't want to have more than one city's events and venues in a JSON file because each build will take too long.
+
+- Documentation of code. I'll write:
+    - a summary of how the scraping functions work, and make a template for new city configurations.
+    - instructions on how to clone the repo and get your own local version running, including required environment variables.
+
+- UI - Venue page is very barebones at the moment. Ideally, it should have a map with a marker, and a list of events similar to the main list view of the app (for example colour-coded by genre).
+
+- Overhaul of component styling - I want to use styled-system to ensure consistent spacing, font sizes and colours, but I'm struggling to get my head around it.
+
+- General clean up of code. There's a lot of places where I've cut corners to get something to work. I'll add todo comments in the code over the next few days.
+
