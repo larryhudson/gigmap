@@ -2,6 +2,7 @@ import styled from 'styled-components'
 import moment from 'moment-timezone'
 import React from 'react'
 import { Link, useStaticQuery, graphql } from 'gatsby'
+import config from '../../../scrape/config'
 
 
 const FlexContainer = styled.div`
@@ -30,14 +31,14 @@ border: 1px solid black;
 `
 
 function dayStr(date) {
-	return moment(date).format('ddd')
+	return moment.tz(date, config.timezone).format('ddd')
 }
 
 function dPath(date, today) {
 	if (date === today) {
 		return '/'
 	} else {
-		return '/day/' + moment(date).format('DD-MM-YYYY')
+		return '/day/' + moment.tz(date, config.timezone).format('DD-MM-YYYY')
 	}
 }
 
