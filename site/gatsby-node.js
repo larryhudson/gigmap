@@ -74,7 +74,7 @@ exports.createPages = ({ graphql, actions }) => {
       let dateStr = moment(date).format('DD-MM-YYYY')
       createPage({
       path: (index === 0 ? '/' : path.join('/day', dateStr)),
-      component: path.resolve('./src/templates/day-hooks.js'),
+      component: path.resolve('./src/templates/day.js'),
       context: {
         date: date,
         prevDate: index === 0 ? null : dates[index - 1],
