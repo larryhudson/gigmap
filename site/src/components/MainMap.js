@@ -158,7 +158,7 @@ class MainMap extends Component {
           defaultZoom={10}
           defaultCenter={MELB_CENTER}
           bootstrapURLKeys={{
-            key: process.env.REACT_APP_MAP_KEY
+            key: process.env.GATSBY_GOOGLE_MAP_KEY
           }}
           onGoogleApiLoaded={({ map, maps }) =>
             apiIsLoaded(map, maps, showingEvents)
