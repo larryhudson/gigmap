@@ -1,4 +1,7 @@
 # Gigmap
+
+Note: Beat Magazine has updated their website layout, which has broken the scraping functionality. I'll try to get back to this project to fix it up soon, but I've got more urgent projects to deal with at the moment.
+
 This is a Gatsby app that shows you what's going on in Melbourne this week - music, comedy, theatre and more. It scrapes [Beat Magazine](https://www.beat.com.au/gig-guide/)'s weekly gig guide.
 
 I've got it hosted at Netlify. [You can see it here](https://gigmap.netlify.com).
