@@ -10,6 +10,7 @@ const SecondPage = () => (
     <Header title="About" hideAboutLink />
     <SEO title="About" />
     <div style={{ padding: "10px" }}>
+      <p><strong>Hi! You've probably noticed this isn't working anymore. Beat Magazine updated their website. I'll try to get around to updating this, but it might be a while.</strong></p>
       <p>
         Gigmap is a little app that shows you what's going on around Melbourne.
       </p>
