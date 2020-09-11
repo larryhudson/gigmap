@@ -16,7 +16,7 @@
     "lodash": "^4.17.11",
     "lodash.uniq": "^4.5.0",
     "moment-timezone": "^0.5.23",
-    "node-fetch": "^2.3.0",
+    "node-fetch": "^2.6.1",
     "request": "^2.88.0",
     "request-promise": "^4.2.4"
   }
